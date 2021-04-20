@@ -1,0 +1,80 @@
+name: release
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle
+
+      - name: Gradle build
+        run: ./gradlew build buildPlugin
+        env:
+          BUILD_ANDROID: "true"
+
+      - uses: r0adkll/sign-android-release@v1
+        name: Sign app APK
+        # ID used to access action output
+        id: sign_app
+        with:
+          releaseDirectory: android/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.ENCODED_KEYSTORE }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "30.0.2"
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+
+      - name: Move,rename packages and get tag,version
+        id: package
+        run: |
+          mkdir packages
+          mv plugin/build/mirai/*.jar packages/
+          mv android/build/outputs/apk/release/*-unsigned-signed.apk packages/
+          cd packages
+
+          for file in `ls|grep .jar`
+          do
+            var1=`echo $file | sed 's/.mirai.jar//g'`
+            break
+          done
+          var3=`expr index $var1 '.'`
+          var2=${var1:0:$var3-1}
+          var2=${var2%-*}+2
+          var2=`expr length $var2`
+          ver=`expr substr $var1 $var2 $var3`
+
+          mv *-unsigned-signed.apk mirai-android-fonto-${ver}.apk
+          mv *.mirai.jar mirai-fonto-${ver}.mirai.jar
+
+          echo "::set-output name=VERSION::$ver"
+          
+      - name: Auto release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "${{ steps.package.outputs.VERSION }}"
+          prerelease: true
+          title: "Mesagisto Mirai Source ${{ steps.package.outputs.VERSION }}"
+          files: |
+            packages/*.jar
+            packages/*.apk
