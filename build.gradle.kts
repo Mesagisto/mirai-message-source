@@ -18,10 +18,9 @@ plugins {
    kotlin("plugin.serialization") version "1.4.30"
    id("net.mamoe.mirai-console") version "2.5.0"
 }
-
-group = "org.meowcat"
-version = "1.0.0"
 allprojects {
+   group = "org.meowcat"
+   version = "1.0.0"
    tasks {
       withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
          kotlinOptions {
