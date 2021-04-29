@@ -20,7 +20,7 @@ plugins {
 }
 
 group = "org.meowcat"
-version = "1.0.0-rc"
+version = "1.0.0"
 allprojects {
    tasks {
       withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {

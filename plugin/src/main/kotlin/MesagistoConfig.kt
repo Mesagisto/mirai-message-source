@@ -7,5 +7,5 @@ object MesagistoConfig : AutoSavePluginConfig("mesagisto") {
 
    val address: String by value("nats://itsusinn.site:4222")
 
-   val targetAddressMapper: MutableMap<Long, String> by value(HashMap())
+   val targetChannelMapper: MutableMap<Long, String> by value()
 }

@@ -4,8 +4,6 @@ plugins {
    id("com.github.johnrengelman.shadow")
    id("net.mamoe.mirai-console")
 }
-group = "org.meowcat"
-version = "0.1.0"
 
 dependencies {
    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.30")
