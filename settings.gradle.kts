@@ -13,7 +13,6 @@ pluginManagement {
 
 rootProject.name = "mirai-mesaga-fonto"
 include(":plugin")
-findProject(":plugin")?.name = "mirai-mesaga-fonto"
 when (System.getenv("BUILD_ANDROID")) {
    "true" -> {
       include(":android")
