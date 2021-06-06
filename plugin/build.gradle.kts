@@ -4,7 +4,9 @@ plugins {
    id("com.github.johnrengelman.shadow")
    id("net.mamoe.mirai-console")
 }
-
+mirai {
+   coreVersion = "2.6.2" // mirai-core version
+}
 dependencies {
    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.30")
    implementation("org.meowcat:handy-dandy:0.1.0")

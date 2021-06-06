@@ -2,7 +2,6 @@ pluginManagement {
    repositories {
       gradlePluginPortal()
       mavenCentral()
-      jcenter()
       google()
       maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
       maven(url = "https://dl.bintray.com/kotlin/kotlin-dev")
@@ -13,7 +12,6 @@ pluginManagement {
 
 rootProject.name = "mirai-mesaga-fonto"
 include(":plugin")
-findProject(":plugin")?.name = "mirai-mesaga-fonto"
 when (System.getenv("BUILD_ANDROID")) {
    "true" -> {
       include(":android")

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 buildscript {
    repositories {
       google()
@@ -16,13 +18,13 @@ plugins {
    kotlin("jvm") version "1.4.30"
    id("com.github.johnrengelman.shadow") version "5.2.0"
    kotlin("plugin.serialization") version "1.4.30"
-   id("net.mamoe.mirai-console") version "2.5.0"
+   id("net.mamoe.mirai-console") version "2.6.2"
 }
 allprojects {
    group = "org.meowcat"
-   version = "1.0.0"
+   version = "1.0.1"
    tasks {
-      withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
+      withType<KotlinCompile>().all {
          kotlinOptions {
             jvmTarget = "1.8"
             freeCompilerArgs += listOf("-Xinline-classes", "-Xopt-in=kotlin.RequiresOptIn")
@@ -32,7 +34,6 @@ allprojects {
    }
    repositories {
       mavenCentral()
-      jcenter()
       google()
       maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
       maven(url = "https://dl.bintray.com/kotlin/kotlin-dev")
