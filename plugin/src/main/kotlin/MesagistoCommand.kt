@@ -10,12 +10,27 @@ object MesagistoCommand : CompositeCommand(
    private val config = MesagistoConfig
 
    @SubCommand("setChannel", "channel", "sc")
+   @Description("设置当前群聊的信使频道")
+   suspend fun MemberCommandSender.handleSetChannel(channel: String) {
+      doHandleSetChannel(channel)
+   }
+   @SubCommand("setChannel", "channel", "sc")
+   @Description("设置当前群聊的信使频道")
    suspend fun MemberCommandSender.handleSetChannel() {
+      doHandleSetChannel(null)
+   }
+
+   suspend fun MemberCommandSender.doHandleSetChannel(channel: String?) {
       if (!user.isOperator()) {
          sendMessage("您不是群主或管理员,无法设置信使频道")
          return
       }
-      sendMessage("成功将目标群聊: ${subject.name} 的信使频道设置为 ${user.id}")
-      config.targetChannelMapper.put(subject.id, user.id.toString())
+      if (channel != null) {
+         sendMessage("成功将目标群聊: ${subject.name} 的信使频道设置为 $channel")
+         config.targetChannelMapper.put(subject.id, channel)
+      } else {
+         sendMessage("成功将目标群聊: ${subject.name} 的信使频道设置为 ${user.id}")
+         config.targetChannelMapper.put(subject.id, user.id.toString())
+      }
    }
 }

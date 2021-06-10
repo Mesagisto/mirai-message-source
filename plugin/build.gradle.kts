@@ -5,7 +5,7 @@ plugins {
    id("net.mamoe.mirai-console")
 }
 mirai {
-   coreVersion = "2.6.2" // mirai-core version
+   coreVersion = "2.6.5"
 }
 dependencies {
    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.30")

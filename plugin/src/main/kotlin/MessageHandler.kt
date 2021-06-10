@@ -2,6 +2,7 @@ package org.meowcat.mesagisto.mirai
 
 import io.nats.client.Nats
 import io.nats.client.impl.Headers
+import io.nats.client.impl.NatsMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -31,9 +32,10 @@ object MessageHandler : CoroutineScope {
       // 若不是负责人则返回
       if (rektoro != bot) return
       // 构建信使消息
-      val mesage = "$senderName:${message.contentToString()}"
+      val content = "$senderName:${message.contentToString()}".toByteArray()
+      val mesage = NatsMessage(channel, null, natsHeaders, content, false)
       // 发送信使消息
-      nc.publish(channel, mesage.toByteArray())
+      nc.publish(mesage)
       // 监听消息
       finos.getOrPut(channel) {
          dispatcher.subscribe(channel) {

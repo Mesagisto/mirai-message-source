@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
    repositories {
       google()
-      jcenter()
       mavenCentral()
       maven("https://jitpack.io")
    }
@@ -18,7 +17,7 @@ plugins {
    kotlin("jvm") version "1.4.30"
    id("com.github.johnrengelman.shadow") version "5.2.0"
    kotlin("plugin.serialization") version "1.4.30"
-   id("net.mamoe.mirai-console") version "2.6.2"
+   id("net.mamoe.mirai-console") version "2.6.5"
 }
 allprojects {
    group = "org.meowcat"
@@ -35,10 +34,6 @@ allprojects {
    repositories {
       mavenCentral()
       google()
-      maven(url = "https://dl.bintray.com/kotlin/kotlin-eap")
-      maven(url = "https://dl.bintray.com/kotlin/kotlin-dev")
-      maven(url = "https://dl.bintray.com/jetbrains/kotlin-native-dependencies")
-      maven(url = "https://kotlin.bintray.com/kotlinx")
       maven("https://jitpack.io")
    }
 }
