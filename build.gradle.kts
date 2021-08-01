@@ -21,7 +21,7 @@ plugins {
 }
 allprojects {
    group = "org.meowcat"
-   version = "1.0.1"
+   version = "1.0.0"
    tasks {
       withType<KotlinCompile>().all {
          kotlinOptions {
