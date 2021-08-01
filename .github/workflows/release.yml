@@ -1,5 +1,13 @@
 name: release
-on: workflow_dispatch
+
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  BUILD_ANDROID: "true"
+          
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,12 +31,9 @@ jobs:
 
       - name: Gradle build
         run: ./gradlew build buildPlugin
-        env:
-          BUILD_ANDROID: "true"
 
       - uses: r0adkll/sign-android-release@v1
         name: Sign app APK
-        # ID used to access action output
         id: sign_app
         with:
           releaseDirectory: android/build/outputs/apk/release
@@ -44,37 +49,22 @@ jobs:
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
 
-      - name: Move,rename packages and get tag,version
+      - name: Move,rename packages
         id: package
         run: |
           mkdir packages
           mv plugin/build/mirai/*.jar packages/
           mv android/build/outputs/apk/release/*-unsigned-signed.apk packages/
           cd packages
+          mv *-unsigned-signed.apk mamf.apk
+          mv *.mirai.jar mmf.mirai.jar
 
-          for file in `ls|grep .jar`
-          do
-            var1=`echo $file | sed 's/.mirai.jar//g'`
-            break
-          done
-          var3=`expr index $var1 '.'`
-          var2=${var1:0:$var3-1}
-          var2=${var2%-*}+2
-          var2=`expr length $var2`
-          ver=`expr substr $var1 $var2 $var3`
-
-          mv *-unsigned-signed.apk mirai-android-fonto-${ver}.apk
-          mv *.mirai.jar mirai-fonto-${ver}.mirai.jar
-
-          echo "::set-output name=VERSION::$ver"
-          
       - name: Auto release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{ steps.package.outputs.VERSION }}"
           prerelease: true
-          title: "Mesagisto Mirai Source ${{ steps.package.outputs.VERSION }}"
           files: |
             packages/*.jar
             packages/*.apk
+            LICENSE
