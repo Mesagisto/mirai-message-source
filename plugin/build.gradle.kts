@@ -6,6 +6,7 @@ plugins {
 }
 mirai {
    coreVersion = "2.6.5"
+  jvmTarget = JavaVersion.VERSION_11
 }
 dependencies {
    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.30")
