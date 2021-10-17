@@ -7,3 +7,7 @@
 /config
 /plugins
 /bots
+/logs
+/data
+/.history
+/db
