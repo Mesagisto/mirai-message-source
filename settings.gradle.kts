@@ -6,10 +6,5 @@ pluginManagement {
    }
 }
 
-rootProject.name = "mirai-mesaga-fonto"
-include(":plugin")
-when (System.getenv("BUILD_ANDROID")) {
-   "true" -> {
-      include(":android")
-   }
-}
+rootProject.name = "mirai-message-source"
+

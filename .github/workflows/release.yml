@@ -4,10 +4,6 @@ on:
   push:
     tags:
       - "v*"
-
-env:
-  BUILD_ANDROID: "true"
-          
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -32,18 +28,6 @@ jobs:
       - name: Gradle build
         run: ./gradlew build buildPlugin
 
-      - uses: r0adkll/sign-android-release@v1
-        name: Sign app APK
-        id: sign_app
-        with:
-          releaseDirectory: android/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.ENCODED_KEYSTORE }}
-          alias: ${{ secrets.KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "30.0.2"
-
       - name: Cleanup Gradle Cache
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
@@ -53,11 +37,9 @@ jobs:
         id: package
         run: |
           mkdir packages
-          mv plugin/build/mirai/*.jar packages/
-          mv android/build/outputs/apk/release/*-unsigned-signed.apk packages/
+          mv build/mirai/*.jar packages/
           cd packages
-          mv *-unsigned-signed.apk mamf.apk
-          mv *.mirai.jar mmf.mirai.jar
+          mv *.mirai.jar mms.mirai.jar
 
       - name: Auto release
         uses: "marvinpinto/action-automatic-releases@latest"
@@ -66,5 +48,4 @@ jobs:
           prerelease: true
           files: |
             packages/*.jar
-            packages/*.apk
             LICENSE
