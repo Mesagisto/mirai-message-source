@@ -24,7 +24,7 @@ repositories {
   mavenCentral()
   maven("https://jitpack.io")
   google()
-  mavenLocal()
+  // mavenLocal()
 }
 mirai {
   coreVersion = "2.8.0-M1"
@@ -47,7 +47,7 @@ dependencies {
   compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1")
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.0")
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.0")
-  implementation("org.meowcat:mesagisto-client-jvm:1.0.2")
+  implementation("org.meowcat:mesagisto-client-jvm:1.0.4")
 
   testCompileOnly("junit:junit:4.13.2")
 }
