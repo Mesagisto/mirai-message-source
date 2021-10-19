@@ -26,18 +26,18 @@ object Plugin : KotlinPlugin(
   private val listener =
     eventChannel.subscribeAlways(MiraiListener::handle)
   override fun onEnable() {
-
     Config.reload()
-    registerCommand(Command)
+
+    Cipher.init(Config.cipher.key, Config.cipher.refusePlain)
     Db.init("mirai")
     Server.initNC(Config.nats.address)
-    Cipher.init(Config.cipher.key)
     Res.resolvePhotoUrl { uid, _ ->
       runCatching {
         val image = Image(uid)
         image.queryUrl()
       }
     }
+    registerCommand(Command)
     logger.info { "信使插件已启用" }
   }
 
