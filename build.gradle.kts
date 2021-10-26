@@ -1,3 +1,4 @@
+import shadow.org.apache.commons.io.FilenameUtils
 plugins {
   java
   kotlin("jvm") version "1.5.21"
@@ -28,6 +29,36 @@ mirai {
   excludeDependency("org.jetbrains.kotlin:kotlin-reflect")
   excludeDependency("org.jetbrains.kotlin:kotlin-stdlib-common")
   excludeDependency("org.jetbrains:annotations")
+
+  configureShadow {
+    exclude { file ->
+      val excludeFiles = arrayOf(
+        "kotlin/*",
+        "kotlinx/coroutines/*",
+        "kotlinx/serialization/*",
+        "org/bouncycastle/*"
+      )
+      val includeFiles = arrayOf(
+        "kotlinx/serialization/cbor/*"
+      )
+      var shouldExclude = false
+
+      excludeFiles.forEach first@{ excludeFile ->
+        if (FilenameUtils.wildcardMatch(file.path, excludeFile)) {
+          shouldExclude = true
+          includeFiles.forEach second@{ includeFile ->
+            if (FilenameUtils.wildcardMatch(file.path, includeFile)) {
+              shouldExclude = false
+              return@second
+            }
+          }
+          return@first
+        }
+      }
+      shouldExclude
+    }
+     minimize()
+  }
 }
 dependencies {
   implementation("io.arrow-kt:arrow-core:1.0.0")

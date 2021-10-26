@@ -5,8 +5,6 @@ import org.meowcat.mesagisto.client.ILogger
 import org.meowcat.mesagisto.client.LogLevel
 import org.meowcat.mesagisto.client.Logger
 
-typealias StdLogger = java.util.logging.Logger
-
 fun Logger.bridgeToMirai(impl: MiraiLogger) {
   level = when (impl) {
 //    Level.ALL -> LogLevel.TRACE
