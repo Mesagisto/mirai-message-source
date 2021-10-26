@@ -6,11 +6,11 @@ import kotlinx.serialization.protobuf.ProtoBuf
 import net.mamoe.mirai.message.MessageSerializers
 import net.mamoe.mirai.message.data.* // ktlint-disable no-wildcard-imports
 import net.mamoe.mirai.utils.MiraiExperimentalApi
+import org.meowcat.mesagisto.client.Logger
 import org.meowcat.mesagisto.client.ensureDirectories
 import org.meowcat.mesagisto.client.toByteArray
 import org.rocksdb.Options
 import org.rocksdb.RocksDB
-import org.tinylog.kotlin.Logger
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.Path
 
@@ -23,7 +23,7 @@ object MiraiDb : AutoCloseable {
     val msgSrcDb = msgSrcDbMap.getOrPut(source.targetId) {
       Logger.trace { "Message history db not found,creating a new one" }
       val options = Options()
-        .setTtl(3600 * 48)
+        .setTtl(3600 * 48L)
         .setCreateIfMissing(true)
       Path("db/mirai/history").ensureDirectories()
       RocksDB.open(options, "db/mirai/history/${source.targetId}")

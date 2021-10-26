@@ -8,17 +8,17 @@ import net.mamoe.mirai.message.data.toMessageChain
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import org.meowcat.mesagisto.client.Cache
 import org.meowcat.mesagisto.client.Db
+import org.meowcat.mesagisto.client.Logger
 import org.meowcat.mesagisto.client.Res
 import org.meowcat.mesagisto.client.data.* // ktlint-disable no-wildcard-imports
 import org.meowcat.mesagisto.mirai.* // ktlint-disable no-wildcard-imports
-import org.tinylog.kotlin.Logger
 
 // fixme change func name
 suspend fun receive(
   message: NatsMessage,
   target: Long
 ): Result<Unit> = runCatching run@{
-  Logger.trace("Parsing packet")
+  Logger.trace { "Parsing packet" }
   when (val packet = Packet.fromCbor(message.data).getOrThrow()) {
     is Either.Left -> {
       receiveMessage(packet.value, target).getOrThrow()
@@ -33,7 +33,7 @@ suspend fun receiveMessage(
   message: Message,
   target: Long
 ): Result<Unit> = runCatching fn@{
-  Logger.trace("transferring")
+  Logger.trace { "transferring" }
   val group = Speakers[target]?.random() ?: return@fn
   val senderName = with(message.profile) { nick ?: username ?: id.toString() }
   var chain = message.chain.flatMap map@{ it ->

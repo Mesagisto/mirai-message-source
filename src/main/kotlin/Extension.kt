@@ -2,7 +2,7 @@ package org.meowcat.mesagisto.mirai
 
 import com.luciad.imageio.webp.WebPReadParam
 import kotlinx.coroutines.runInterruptible
-import org.tinylog.kotlin.Logger
+import org.meowcat.mesagisto.client.Logger
 import java.io.File
 import javax.imageio.ImageIO
 import javax.imageio.stream.FileImageInputStream
@@ -22,7 +22,7 @@ suspend fun isWebp(file: File): Boolean = runInterruptible fn@{
 }
 suspend fun convertWebpToPng(from: File, to: File) = runInterruptible {
   Thread.currentThread().contextClassLoader = Plugin::class.java.classLoader
-  Logger.trace { "Converting" }
+  Logger.trace { "Converting image format" }
   val reader = ImageIO.getImageReadersByMIMEType("image/webp").next()
   val readParam = WebPReadParam().apply {
     isBypassFiltering = true
