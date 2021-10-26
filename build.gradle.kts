@@ -1,25 +1,20 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
-
 plugins {
   java
-  kotlin("jvm") version "1.5.10"
+  kotlin("jvm") version "1.5.21"
   id("com.github.johnrengelman.shadow") version "5.2.0"
-  kotlin("plugin.serialization") version "1.5.10"
+  kotlin("plugin.serialization") version "1.5.21"
   id("net.mamoe.mirai-console") version "2.8.0-M1"
 }
-
 group = "org.meowcat"
 version = "1.0.0"
-tasks {
-  withType<KotlinCompile>().all {
-    kotlinOptions {
-      jvmTarget = "11"
-      freeCompilerArgs = listOf("-Xinline-classes", "-Xopt-in=kotlin.RequiresOptIn")
-    }
-    sourceCompatibility = "11"
+tasks.compileKotlin {
+  kotlinOptions {
+    jvmTarget = "1.8"
+    freeCompilerArgs = listOf("-Xinline-classes", "-Xopt-in=kotlin.RequiresOptIn")
   }
+  sourceCompatibility = "1.8"
 }
+
 repositories {
   mavenCentral()
   maven("https://jitpack.io")
@@ -28,7 +23,7 @@ repositories {
 }
 mirai {
   coreVersion = "2.8.0-M1"
-  jvmTarget = JavaVersion.VERSION_11
+  jvmTarget = JavaVersion.VERSION_1_8
   excludeDependency("org.jetbrains.kotlin:kotlin-stdlib")
   excludeDependency("org.jetbrains.kotlin:kotlin-reflect")
   excludeDependency("org.jetbrains.kotlin:kotlin-stdlib-common")
