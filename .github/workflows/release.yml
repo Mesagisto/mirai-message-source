@@ -10,28 +10,15 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: set up JDK 11
-        uses: actions/setup-java@v1
+      - name: set up JDK 8
+        uses: actions/setup-java@v2
         with:
-          java-version: 11
-
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle
+          java-version: '8'
+          distribution: 'zulu'
+          cache: 'gradle'
 
       - name: Gradle build
         run: ./gradlew build buildPlugin
-
-      - name: Cleanup Gradle Cache
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
 
       - name: Move,rename packages
         id: package
@@ -39,7 +26,7 @@ jobs:
           mkdir packages
           mv build/mirai/*.jar packages/
           cd packages
-          mv *.mirai.jar mms.mirai.jar
+          mv *.mirai.jar mms.jar
 
       - name: Auto release
         uses: "marvinpinto/action-automatic-releases@latest"
