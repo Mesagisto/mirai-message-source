@@ -9,10 +9,7 @@ import net.mamoe.mirai.event.subscribeAlways
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.utils.info
-import org.meowcat.mesagisto.client.Cipher
-import org.meowcat.mesagisto.client.Db
-import org.meowcat.mesagisto.client.Res
-import org.meowcat.mesagisto.client.Server
+import org.meowcat.mesagisto.client.*
 import org.meowcat.mesagisto.mirai.handlers.MiraiListener
 
 object Plugin : KotlinPlugin(
@@ -23,12 +20,18 @@ object Plugin : KotlinPlugin(
   )
 ) {
   private val eventChannel = globalEventChannel()
-  private val listener =
-    eventChannel.subscribeAlways(MiraiListener::handle)
+  private val listener = eventChannel.subscribeAlways(MiraiListener::handle)
+
   override fun onEnable() {
+    Logger.bridgeToMirai(logger)
     Config.reload()
 
-    Cipher.init(Config.cipher.key, Config.cipher.refusePlain)
+    if (Config.cipher.enable) {
+      Cipher.init(Config.cipher.key, Config.cipher.refusePlain)
+    } else {
+      Cipher.deinit()
+    }
+
     Db.init("mirai")
     Server.initNC(Config.nats.address)
     Res.resolvePhotoUrl { uid, _ ->

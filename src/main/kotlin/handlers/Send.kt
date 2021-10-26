@@ -12,7 +12,6 @@ import org.meowcat.mesagisto.mirai.Config
 import org.meowcat.mesagisto.mirai.Listener
 import org.meowcat.mesagisto.mirai.MiraiDb
 import org.meowcat.mesagisto.mirai.Speakers
-import org.tinylog.kotlin.Logger
 import kotlin.collections.HashSet
 
 private val config = Config
@@ -67,7 +66,11 @@ suspend fun sendCommon(
     reply = replyId,
     chain
   )
-  val packet = Packet.encryptFrom(message.left())
+  val packet = if (Config.cipher.enable) {
+    Packet.encryptFrom(message.left())
+  } else {
+    Packet.from(message.left())
+  }
   Logger.trace { "Assembling the packet" }
   Server.sendAndRegisterReceive(subject.id, channel, packet) receive@{ it, id ->
     return@receive receive(it as NatsMessage, id)
