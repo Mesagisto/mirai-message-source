@@ -17,16 +17,8 @@ jobs:
           distribution: 'zulu'
           cache: 'gradle'
 
-      - name: Gradle build
-        run: ./gradlew build buildPlugin
-
-      - name: Move,rename packages
-        id: package
-        run: |
-          mkdir packages
-          mv build/mirai/*.jar packages/
-          cd packages
-          mv *.mirai.jar mms.jar
+      - name: Build
+        run: make all clean
 
       - name: Auto release
         uses: "marvinpinto/action-automatic-releases@latest"

@@ -19,5 +19,5 @@ jobs:
           distribution: 'zulu'
           cache: 'gradle'
 
-      - name: Gradle build
-        run: ./gradlew build
+      - name: Build
+        run: make compile
