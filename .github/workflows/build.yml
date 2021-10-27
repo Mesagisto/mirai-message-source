@@ -12,12 +12,12 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: set up JDK 8
+      - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '8'
-          distribution: 'zulu'
-          cache: 'gradle'
+          java-version: 17
+          distribution: zulu
+          cache: gradle
 
       - name: Build
         run: make compile
