@@ -70,7 +70,7 @@ dependencies {
   compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.0")
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.0")
-  implementation("org.meowcat:mesagisto-client-jvm:1.0.8")
+  implementation("org.meowcat:mesagisto-client-jvm:1.0.9")
 
   testCompileOnly("junit:junit:4.13.2")
 }
