@@ -7,7 +7,7 @@ plugins {
   id("net.mamoe.mirai-console") version "2.8.0-M1"
 }
 group = "org.meowcat"
-version = "1.0.0"
+version = "1.1.0-rc1"
 tasks.compileKotlin {
   kotlinOptions {
     jvmTarget = "1.8"
@@ -57,7 +57,7 @@ mirai {
       }
       shouldExclude
     }
-     minimize()
+    minimize()
   }
 }
 dependencies {
@@ -70,7 +70,7 @@ dependencies {
   compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.0")
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.0")
-  implementation("org.meowcat:mesagisto-client-jvm:1.0.7")
+  implementation("org.meowcat:mesagisto-client-jvm:1.0.8")
 
   testCompileOnly("junit:junit:4.13.2")
 }
