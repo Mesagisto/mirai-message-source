@@ -40,18 +40,18 @@ suspend fun receiveMessage(
     when (it) {
       is MessageType.Text -> listOf(PlainText("$senderName : ${it.content}"))
       is MessageType.Image -> {
-        val file = Cache.file(it.id, it.url, Config.mapper(group)!!).getOrThrow().toFile()
+        val file = Cache.file(it.id, it.url, Config.mapper(group)!!).getOrThrow()
         Logger.trace { "gotten file" }
         val image = if (file.isWebp()) {
           Logger.trace { "image is webp,which is not supported by qq,being converted into png" }
           Res.convertFile(it.id) { from, to ->
             runCatching {
-              convertWebpToPng(from.toFile(), to.toFile())
+              convertWebpToPng(from, to)
             }
           }.onFailure { Logger.error(it) }
-          file
+          file.toFile()
         } else {
-          file
+          file.toFile()
         }.uploadAsImage(group)
         listOf(PlainText("$senderName:"), image)
       }

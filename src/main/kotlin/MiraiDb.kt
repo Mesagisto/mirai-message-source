@@ -7,12 +7,12 @@ import net.mamoe.mirai.message.MessageSerializers
 import net.mamoe.mirai.message.data.* // ktlint-disable no-wildcard-imports
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import org.meowcat.mesagisto.client.Logger
-import org.meowcat.mesagisto.client.ensureDirectories
 import org.meowcat.mesagisto.client.toByteArray
 import org.rocksdb.Options
 import org.rocksdb.RocksDB
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.Path
+import kotlin.io.path.createDirectories
 
 object MiraiDb : AutoCloseable {
   private val msgSrcDbMap by lazy {
@@ -25,7 +25,7 @@ object MiraiDb : AutoCloseable {
       val options = Options()
         .setTtl(3600 * 48L)
         .setCreateIfMissing(true)
-      Path("db/mirai/history").ensureDirectories()
+      Path("db/mirai/history").createDirectories()
       RocksDB.open(options, "db/mirai/history/${source.targetId}")
     }
     msgSrcDb.put(
