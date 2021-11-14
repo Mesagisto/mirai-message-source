@@ -7,7 +7,7 @@ plugins {
   id("net.mamoe.mirai-console") version "2.8.0-M1"
 }
 group = "org.meowcat"
-version = "1.1.0-rc1-fix2"
+version = "1.1.0-rc1-fix3"
 tasks.compileKotlin {
   kotlinOptions {
     jvmTarget = "1.8"
@@ -20,7 +20,7 @@ repositories {
   mavenCentral()
   maven("https://jitpack.io")
   google()
-  // mavenLocal()
+  mavenLocal()
 }
 mirai {
   coreVersion = "2.8.0-M1"
@@ -62,15 +62,15 @@ mirai {
 }
 dependencies {
   implementation("io.arrow-kt:arrow-core:1.0.0")
-  implementation("io.nats:jnats:2.12.0")
-  implementation("org.rocksdb:rocksdbjni:6.22.1.1")
+  implementation("io.nats:jnats:2.13.1")
+  implementation("org.rocksdb:rocksdbjni:6.25.3")
   implementation("com.github.gotson:webp-imageio:0.2.2")
 
   compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
   compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.0")
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.0")
-  implementation("org.meowcat:mesagisto-client-jvm:1.0.10")
-  // implementation("org.meowcat:mesagisto-client:1.0.12"
+  implementation("org.meowcat:mesagisto-client-jvm:1.0.12")
+  // implementation("org.meowcat:mesagisto-client:1.0.18")
   testCompileOnly("junit:junit:4.13.2")
 }
