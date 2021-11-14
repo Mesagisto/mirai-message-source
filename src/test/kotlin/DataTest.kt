@@ -14,7 +14,7 @@ object DataTest {
   @OptIn(InternalSerializationApi::class)
   private fun testCbor() {
     val message = Message(
-      profile = Profile(1212121L, null, null),
+      profile = Profile(ByteArray(0), null, null),
       id = 2222.toByteArray(),
       reply = 123232.toByteArray(),
       chain = listOf(MessageType.Text("this is text 1")),

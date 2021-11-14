@@ -8,10 +8,7 @@ import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import org.meowcat.mesagisto.client.* // ktlint-disable no-wildcard-imports
 import org.meowcat.mesagisto.client.data.* // ktlint-disable no-wildcard-imports
 import org.meowcat.mesagisto.client.data.Message
-import org.meowcat.mesagisto.mirai.Config
-import org.meowcat.mesagisto.mirai.Listener
-import org.meowcat.mesagisto.mirai.MiraiDb
-import org.meowcat.mesagisto.mirai.Speakers
+import org.meowcat.mesagisto.mirai.*
 import kotlin.collections.HashSet
 
 private val config = Config
@@ -37,14 +34,15 @@ suspend fun sendCommon(
   val chain = message.mapNotNull map@{
     when (it) {
       is PlainText -> {
+        // 有时mirai会出现没有内容的消息,过滤
         if (!it.isContentBlank()) {
           MessageType.Text(it.content)
         } else null
       }
       is Image -> {
-        Res.storePhotoId(it.imageId)
-        Cache.fileByUrl(it.imageId, it.queryUrl()).getOrThrow()
-        MessageType.Image(it.imageId)
+        Res.storePhotoId(it.imageId.toByteArray())
+        Cache.fileByUrl(it.imageId.toByteArray(), it.queryUrl()).getOrThrow()
+        MessageType.Image(it.imageId.toByteArray())
       }
       is QuoteReply -> {
         val localId = it.source.ids.first()
@@ -58,7 +56,7 @@ suspend fun sendCommon(
 
   val message = Message(
     profile = Profile(
-      sender.id,
+      sender.id.toByteArray(),
       sender.nick.ifEmpty { null },
       sender.nameCard.ifEmpty { null }
     ),
@@ -66,11 +64,7 @@ suspend fun sendCommon(
     reply = replyId,
     chain
   )
-  val packet = if (Config.cipher.enable) {
-    Packet.encryptFrom(message.left())
-  } else {
-    Packet.from(message.left())
-  }
+  val packet = Packet.from(message.left())
   Logger.trace { "Assembling the packet" }
   Server.sendAndRegisterReceive(subject.id, channel, packet) receive@{ it, id ->
     return@receive receive(it as NatsMessage, id)

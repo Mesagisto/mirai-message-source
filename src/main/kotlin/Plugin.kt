@@ -36,7 +36,7 @@ object Plugin : KotlinPlugin(
     Server.initNC(Config.nats.address)
     Res.resolvePhotoUrl { uid, _ ->
       runCatching {
-        val image = Image(uid)
+        val image = Image(uid.toString(charset = Charsets.UTF_8))
         image.queryUrl()
       }
     }
