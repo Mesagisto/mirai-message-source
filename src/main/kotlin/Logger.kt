@@ -18,9 +18,11 @@ fun Logger.bridgeToMirai(impl: MiraiLogger) {
   provider = object : ILogger {
     override fun log(level: LogLevel, msg: String) {
       when (level) {
-//        LogLevel.TRACE -> impl.fine(msg)
-//        LogLevel.DEBUG -> impl.finer(msg)
+        LogLevel.TRACE -> impl.info(msg)
+        LogLevel.DEBUG -> impl.info(msg)
         LogLevel.INFO -> impl.info(msg)
+        LogLevel.WARN -> impl.warning(msg)
+        LogLevel.ERROR -> impl.error(msg)
         else -> impl.info(msg)
       }
     }
