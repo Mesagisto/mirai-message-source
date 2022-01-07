@@ -7,8 +7,10 @@ import net.mamoe.mirai.console.data.value
 import net.mamoe.mirai.contact.Group
 
 object Config : AutoSavePluginConfig("mesagisto") {
+  val enable: Boolean by value()
   val nats: NatsConfig by value()
   val cipher: CipherConfig by value()
+  val proxy: ProxyConfig by value()
   val targetChannelMapper: MutableMap<Long, String> by value()
   fun mapper(target: Long): String? = targetChannelMapper[target]
   fun mapper(target: Group): String? = targetChannelMapper[target.id]
@@ -18,11 +20,15 @@ object Config : AutoSavePluginConfig("mesagisto") {
 data class NatsConfig(
   val address: String = "nats://itsusinn.site:4222"
 )
-
+@Serializable
+data class ProxyConfig(
+  val enable: Boolean = false,
+  val address: String = "http://127.0.0.1:7890"
+)
 @Serializable
 data class CipherConfig(
   val enable: Boolean = true,
-  val key: String = "this is an example key",
+  val key: String = "this-is-an-example-key",
   @SerialName("refuse-plain")
   val refusePlain: Boolean = true
 )
