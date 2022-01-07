@@ -1,14 +1,13 @@
 package org.meowcat.mesagisto.mirai
 
-import net.mamoe.mirai.console.command.CommandManager.INSTANCE.registerCommand
-import net.mamoe.mirai.console.command.CommandManager.INSTANCE.unregisterAllCommands
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
+import net.mamoe.mirai.event.Listener
+import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.event.globalEventChannel
 import net.mamoe.mirai.event.subscribeAlways
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
-import net.mamoe.mirai.utils.info
 import org.meowcat.mesagisto.client.*
 import org.meowcat.mesagisto.mirai.handlers.MiraiListener
 
@@ -20,33 +19,40 @@ object Plugin : KotlinPlugin(
   )
 ) {
   private val eventChannel = globalEventChannel()
-  private val listener = eventChannel.subscribeAlways(MiraiListener::handle)
+  private lateinit var listener: Listener<GroupMessageEvent>
+  private lateinit var commandsListener: Listener<GroupMessageEvent>
 
   override fun onEnable() {
-    Logger.bridgeToMirai(logger)
     Config.reload()
-
-    if (Config.cipher.enable) {
-      Cipher.init(Config.cipher.key, Config.cipher.refusePlain)
-    } else {
-      Cipher.deinit()
+    if (!Config.enable) {
+      logger.warning("Mesagisto未启用!")
+      return
     }
-
-    Db.init("mirai")
-    Server.initNC(Config.nats.address)
-    Res.resolvePhotoUrl { uid, _ ->
-      runCatching {
-        val image = Image(uid.toString(charset = Charsets.UTF_8))
-        image.queryUrl()
+    Logger.bridgeToMirai(logger)
+    MesagistoConfig.builder {
+      name = "mirai"
+      natsAddress = Config.nats.address
+      cipherEnable = Config.cipher.enable
+      cipherKey = Config.cipher.key
+      cipherRefusePlain = Config.cipher.refusePlain
+      proxyEnable = Config.proxy.enable
+      proxyUri = Config.proxy.address
+      resolvePhotoUrl = { uid, _ ->
+        runCatching {
+          val image = Image(uid.toString(charset = Charsets.UTF_8))
+          image.queryUrl()
+        }
       }
-    }
-    registerCommand(Command)
-    logger.info { "信使插件已启用" }
+    }.apply()
+    listener = eventChannel.subscribeAlways(MiraiListener::handle)
+    commandsListener = eventChannel.subscribeAlways(Command::handle)
+    Logger.info { "信使已启用" }
   }
 
   override fun onDisable() {
-    unregisterAllCommands(this)
+    if (!Config.enable) return
     listener.complete()
-    logger.info { "信使插件已禁用" }
+    commandsListener.complete()
+    Logger.info { "信使已禁用" }
   }
 }
