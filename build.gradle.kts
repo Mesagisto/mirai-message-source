@@ -7,7 +7,7 @@ plugins {
   id("net.mamoe.mirai-console") version "2.8.0-M1"
 }
 group = "org.meowcat"
-version = "1.1.0-rc1-fix3"
+version = "1.1.0-rc2"
 tasks.compileKotlin {
   kotlinOptions {
     jvmTarget = "1.8"
@@ -23,7 +23,7 @@ repositories {
   mavenLocal()
 }
 mirai {
-  coreVersion = "2.8.0-M1"
+  coreVersion = "2.9.2"
   jvmTarget = JavaVersion.VERSION_1_8
   excludeDependency("org.jetbrains.kotlin:kotlin-stdlib")
   excludeDependency("org.jetbrains.kotlin:kotlin-reflect")
@@ -70,7 +70,7 @@ dependencies {
   compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.0")
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.0")
-  implementation("org.meowcat:mesagisto-client-jvm:1.0.12")
+  implementation("org.meowcat:mesagisto-client-jvm:1.1.0")
   // implementation("org.meowcat:mesagisto-client:1.0.18")
   testCompileOnly("junit:junit:4.13.2")
 }
