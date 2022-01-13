@@ -20,4 +20,4 @@ jobs:
           cache: gradle
 
       - name: Build
-        run: make compile
+        run: bash build.sh
