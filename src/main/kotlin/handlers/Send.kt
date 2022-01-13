@@ -1,6 +1,5 @@
 package org.meowcat.mesagisto.mirai.handlers
 
-import arrow.core.left
 import io.nats.client.impl.NatsMessage
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.* // ktlint-disable no-wildcard-imports

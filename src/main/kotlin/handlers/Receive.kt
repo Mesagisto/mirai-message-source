@@ -1,6 +1,5 @@
 package org.meowcat.mesagisto.mirai.handlers
 
-import arrow.core.Either
 import io.nats.client.impl.NatsMessage
 import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.message.data.QuoteReply

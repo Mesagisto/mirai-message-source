@@ -1,10 +1,10 @@
 import shadow.org.apache.commons.io.FilenameUtils
 plugins {
   java
-  kotlin("jvm") version "1.5.21"
+  kotlin("jvm") version "1.6.0"
   id("com.github.johnrengelman.shadow") version "5.2.0"
-  kotlin("plugin.serialization") version "1.5.21"
-  id("net.mamoe.mirai-console") version "2.8.0-M1"
+  kotlin("plugin.serialization") version "1.6.0"
+  id("net.mamoe.mirai-console") version "2.9.2"
 }
 group = "org.meowcat"
 version = "1.1.0-rc2"
@@ -61,16 +61,15 @@ mirai {
   }
 }
 dependencies {
-  implementation("io.arrow-kt:arrow-core:1.0.0")
   implementation("io.nats:jnats:2.13.1")
-  implementation("org.rocksdb:rocksdbjni:6.25.3")
+  implementation("org.rocksdb:rocksdbjni:6.27.3")
   implementation("com.github.gotson:webp-imageio:0.2.2")
 
   compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-  compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.0")
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.0")
-  implementation("org.meowcat:mesagisto-client-jvm:1.1.0")
+  compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt")
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.2")
+  compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.2")
+  implementation("org.meowcat:mesagisto-client-jvm:1.1.2")
   // implementation("org.meowcat:mesagisto-client:1.0.18")
   testCompileOnly("junit:junit:4.13.2")
 }
