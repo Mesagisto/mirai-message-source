@@ -1,6 +1,7 @@
 package org.meowcat.mesagisto.mirai.handlers
 
 import io.nats.client.impl.NatsMessage
+import net.mamoe.mirai.contact.nameCardOrNick
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.* // ktlint-disable no-wildcard-imports
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
@@ -56,8 +57,9 @@ suspend fun sendCommon(
   val message = Message(
     profile = Profile(
       sender.id.toByteArray(),
-      sender.nick.ifEmpty { null },
-      sender.nameCard.ifEmpty { null }
+      // 等待Mirai实现QID
+      sender.id.toString(),
+      sender.nameCardOrNick.ifEmpty { null }
     ),
     id = msgId.toByteArray(),
     reply = replyId,
