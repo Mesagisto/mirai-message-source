@@ -7,7 +7,7 @@ plugins {
   id("net.mamoe.mirai-console") version "2.9.2"
 }
 group = "org.meowcat"
-version = "1.1.0-rc2"
+version = "1.1.0"
 tasks.compileKotlin {
   kotlinOptions {
     jvmTarget = "1.8"
