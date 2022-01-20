@@ -17,7 +17,6 @@ suspend fun receive(
   message: NatsMessage,
   target: Long
 ): Result<Unit> = runCatching run@{
-  Logger.trace { "Parsing packet" }
   when (val packet = Packet.fromCbor(message.data).getOrThrow()) {
     is Either.Left -> {
       receiveMessage(packet.value, target).getOrThrow()
@@ -32,7 +31,6 @@ suspend fun receiveMessage(
   message: Message,
   target: Long
 ): Result<Unit> = runCatching fn@{
-  Logger.trace { "transferring" }
   val group = Speakers[target]?.random() ?: return@fn
   val senderName = with(message.profile) { nick ?: username ?: id.toString() }
   var chain = message.chain.flatMap map@{ it ->
@@ -40,9 +38,8 @@ suspend fun receiveMessage(
       is MessageType.Text -> listOf(PlainText("$senderName : ${it.content}"))
       is MessageType.Image -> {
         val file = Cache.file(it.id, it.url, Config.mapper(group)!!).getOrThrow()
-        Logger.trace { "gotten file" }
         val image = if (file.isWebp()) {
-          Logger.trace { "image is webp,which is not supported by qq,being converted into png" }
+          Logger.debug { "图片为QQ不支持的WEBP格式,正在转化为PNG格式..." }
           Res.convertFile(it.id) { from, to ->
             runCatching {
               convertWebpToPng(from, to)

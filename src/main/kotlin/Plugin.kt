@@ -15,7 +15,7 @@ object Plugin : KotlinPlugin(
   JvmPluginDescription(
     id = "org.meowcat.mesagisto",
     name = "Mesagisto",
-    version = "1.0.0"
+    version = "1.0-unknown"
   )
 ) {
   private val eventChannel = globalEventChannel()
@@ -25,7 +25,7 @@ object Plugin : KotlinPlugin(
   override fun onEnable() {
     Config.reload()
     if (!Config.enable) {
-      logger.warning("Mesagisto未启用!")
+      logger.warning("Mesagisto信使未启用!")
       return
     }
     Logger.bridgeToMirai(logger)
@@ -46,13 +46,13 @@ object Plugin : KotlinPlugin(
     }.apply()
     listener = eventChannel.subscribeAlways(MiraiListener::handle)
     commandsListener = eventChannel.subscribeAlways(Command::handle)
-    Logger.info { "信使已启用" }
+    Logger.info { "Mesagisto信使已启用" }
   }
 
   override fun onDisable() {
     if (!Config.enable) return
     listener.complete()
     commandsListener.complete()
-    Logger.info { "信使已禁用" }
+    Logger.info { "Mesagisto信使已禁用" }
   }
 }

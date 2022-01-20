@@ -33,7 +33,6 @@ suspend fun isWebp(path: Path): Boolean = runInterruptible fn@{
 }.getOrThrow()
 suspend fun convertWebpToPng(from: Path, to: Path) = runInterruptible {
   Thread.currentThread().contextClassLoader = Plugin::class.java.classLoader
-  Logger.trace { "Converting image format" }
   // fixme use thread-local
   val reader = ImageIO.getImageReadersByMIMEType("image/webp").next()
   val readParam = WebPReadParam().apply {
@@ -45,7 +44,7 @@ suspend fun convertWebpToPng(from: Path, to: Path) = runInterruptible {
     ImageIO.write(image, "png", it)
   }
   (reader.input as Closeable).close()
-  Logger.trace { "Convert successfully" }
+  Logger.debug { "成功由WEBP转化为PNG." }
 }
 
 inline fun Db.putMsgId(

@@ -21,7 +21,7 @@ object MiraiDb : AutoCloseable {
   @OptIn(InternalSerializationApi::class, ExperimentalSerializationApi::class)
   fun putMsgSource(source: MessageSource) {
     val msgSrcDb = msgSrcDbMap.getOrPut(source.targetId) {
-      Logger.trace { "Message history db not found,creating a new one" }
+      Logger.debug { "历史消息数据库未发现,正在创建新数据库..." }
       val options = Options()
         .setTtl(3600 * 48L)
         .setCreateIfMissing(true)

@@ -66,7 +66,6 @@ suspend fun sendCommon(
     chain
   )
   val packet = Packet.from(message.left())
-  Logger.trace { "Assembling the packet" }
   Server.sendAndRegisterReceive(subject.id, channel, packet) receive@{ it, id ->
     return@receive receive(it as NatsMessage, id)
   }
