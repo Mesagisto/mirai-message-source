@@ -8,7 +8,7 @@ import net.mamoe.mirai.message.data.MessageSource.Key.quote
 object Command {
   suspend fun handle(event: GroupMessageEvent): Unit = event.run {
     val text = event.message.contentToString()
-    if (!text.startsWith("/信使") and !text.startsWith("/f")) return
+    if (!text.startsWith("/信使 ") and !text.startsWith("/f ")) return
     val args = text.split(" ")
     when (args.getOrNull(1)) {
       "设置频道" -> {
