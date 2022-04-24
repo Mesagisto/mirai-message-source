@@ -5,21 +5,36 @@ import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.message.data.QuoteReply
 import net.mamoe.mirai.message.data.toMessageChain
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
-import org.meowcat.mesagisto.client.Cache
-import org.meowcat.mesagisto.client.Db
-import org.meowcat.mesagisto.client.Logger
-import org.meowcat.mesagisto.client.Res
+import org.meowcat.mesagisto.client.*
 import org.meowcat.mesagisto.client.data.* // ktlint-disable no-wildcard-imports
 import org.meowcat.mesagisto.mirai.* // ktlint-disable no-wildcard-imports
 
-// fixme change func name
-suspend fun receive(
+object Receive {
+  suspend fun recover() {
+    Config.bindings.forEach {
+      Server.recv(it.key.toString(), it.value) handler@{ msg, id ->
+        return@handler mainHandler(msg as NatsMessage, id)
+      }
+    }
+  }
+  suspend fun add(target: Long, address: String) {
+    Server.recv(target.toString(), address) handler@{ msg, target_id ->
+      return@handler mainHandler(msg as NatsMessage, target_id)
+    }
+  }
+  suspend fun change(target: Long, address: String) {
+    Server.unsub(target.toString())
+    add(target, address)
+  }
+}
+
+suspend fun mainHandler(
   message: NatsMessage,
-  target: Long
+  target: String
 ): Result<Unit> = runCatching run@{
   when (val packet = Packet.fromCbor(message.data).getOrThrow()) {
     is Either.Left -> {
-      receiveMessage(packet.value, target).getOrThrow()
+      leftSubHandler(packet.value, target.toLong()).getOrThrow()
     }
     is Either.Right -> {
       packet.value
@@ -27,7 +42,7 @@ suspend fun receive(
   }
 }
 
-suspend fun receiveMessage(
+private suspend fun leftSubHandler(
   message: Message,
   target: Long
 ): Result<Unit> = runCatching fn@{

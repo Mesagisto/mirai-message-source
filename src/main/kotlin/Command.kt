@@ -4,6 +4,7 @@ import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.isOperator
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.MessageSource.Key.quote
+import org.meowcat.mesagisto.mirai.handlers.Receive
 
 object Command {
   suspend fun handle(event: GroupMessageEvent): Unit = event.run {
@@ -39,12 +40,14 @@ object Command {
       group.sendMessage("您不是群主或管理员,无法设置信使频道")
       return
     }
-    if (channel != null) {
-      group.sendMessage("成功将目标群聊: ${group.name} 的信使频道设置为 $channel")
-      config.targetChannelMapper[group.id] = channel
+
+    val address = channel ?: group.id.toString()
+    if (Config.bindings.put(group.id, address) != null) {
+      Receive.change(group.id, address)
+      group.sendMessage("成功将目标群聊: ${group.name} 的信使频道变更为$address")
     } else {
-      group.sendMessage("成功将目标群聊: ${group.name} 的信使频道设置为 ${group.id}")
-      config.targetChannelMapper[group.id] = group.id.toString()
+      Receive.add(group.id, address)
+      group.sendMessage("成功将目标群聊: ${group.name} 的信使频道设置为$address")
     }
   }
 }

@@ -66,7 +66,5 @@ suspend fun sendCommon(
     chain
   )
   val packet = Packet.from(message.left())
-  Server.sendAndRegisterReceive(subject.id, channel, packet) receive@{ it, id ->
-    return@receive receive(it as NatsMessage, id)
-  }
+  Server.send(subject.id.toString(), natsAddress, packet)
 }
