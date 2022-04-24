@@ -86,16 +86,16 @@ windows-x86_64(){
 	jar -c -f packages/$name -C $target/extract/ .
 	rm -rf $target
 }
-mac-x86_64(){
-  target=target/mac-x86_64
-  name=mac-x86_64.jar
+osx-x86_64(){
+  target=target/osx-x86_64
+  name=osx-x86_64.jar
 
 	mkdir -p $target/extract $target/tmp
 	cp -r extract $target
 	# rocksdb
-	mv $target/extract/librocksdbjni-osx.jnilib $target/tmp
+	mv $target/extract/librocksdbjni-osx-x86_64.jnilib $target/tmp
 	rm $target/extract/librocksdbjni*
-	mv $target/tmp/librocksdbjni-osx.jnilib $target/extract
+	mv $target/tmp/librocksdbjni-osx-x86_64.jnilib $target/extract
 	# webp
 	mv $target/extract/native/Mac/x86_64/libwebp-imageio.dylib $target/tmp
 	rm -rf  $target/extract/native
@@ -110,7 +110,7 @@ all_target(){
 	linux-x86
 	linux-aarch64
 	windows-x86_64
-	mac-x86_64
+	osx-x86_64
 	cd packages
 	prefix=mirai-
 	for files in $(ls *.jar)
