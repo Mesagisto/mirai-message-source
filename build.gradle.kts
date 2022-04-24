@@ -66,10 +66,10 @@ dependencies {
   implementation("com.github.gotson:webp-imageio:0.2.2")
 
   compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-  compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1-native-mt")
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.2")
-  compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.2")
-  implementation("org.meowcat:mesagisto-client-jvm:1.3.0")
+  compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.2.2")
+  compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.2.2")
+  implementation("org.meowcat:mesagisto-client-jvm:1.3.1")
   // implementation("org.meowcat:mesagisto-client:1.3.0-dev3")
   testCompileOnly("junit:junit:4.13.2")
 }
