@@ -11,9 +11,14 @@ object Config : AutoSavePluginConfig("mesagisto") {
   val nats: NatsConfig by value()
   val cipher: CipherConfig by value()
   val proxy: ProxyConfig by value()
-  val targetChannelMapper: MutableMap<Long, String> by value()
+  val bindings: MutableMap<Long, String> by value()
+  private val targetChannelMapper: MutableMap<Long, String> by value()
   fun mapper(target: Long): String? = targetChannelMapper[target]
   fun mapper(target: Group): String? = targetChannelMapper[target.id]
+  fun migrate() {
+    bindings.putAll(targetChannelMapper)
+    targetChannelMapper.clear()
+  }
 }
 
 @Serializable

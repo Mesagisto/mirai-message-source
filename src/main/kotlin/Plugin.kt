@@ -1,5 +1,6 @@
 package org.meowcat.mesagisto.mirai
 
+import kotlinx.coroutines.launch
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.event.Listener
@@ -10,6 +11,7 @@ import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import org.meowcat.mesagisto.client.*
 import org.meowcat.mesagisto.mirai.handlers.MiraiListener
+import org.meowcat.mesagisto.mirai.handlers.Receive
 
 object Plugin : KotlinPlugin(
   JvmPluginDescription(
@@ -24,6 +26,7 @@ object Plugin : KotlinPlugin(
 
   override fun onEnable() {
     Config.reload()
+    Config.migrate()
     if (!Config.enable) {
       logger.warning("Mesagisto信使未启用!")
       return

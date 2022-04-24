@@ -1,6 +1,5 @@
 package org.meowcat.mesagisto.mirai.handlers
 
-import io.nats.client.impl.NatsMessage
 import net.mamoe.mirai.contact.nameCardOrNick
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.* // ktlint-disable no-wildcard-imports
@@ -11,14 +10,17 @@ import org.meowcat.mesagisto.client.data.Message
 import org.meowcat.mesagisto.mirai.*
 import kotlin.collections.HashSet
 
-private val config = Config
-private val mapper = Config.targetChannelMapper
+object MiraiListener {
+  suspend fun handle(event: GroupMessageEvent) {
+    sendHandler(event)
+  }
+}
 
-suspend fun sendCommon(
+suspend fun sendHandler(
   event: GroupMessageEvent
 ): Unit = with(event) {
   // 获取目标群聊的信使地址,若不存在则返回
-  val channel = mapper[subject.id] ?: return
+  val natsAddress = Config.bindings[subject.id] ?: return
   // 此Bot能接收到消息说明该bot可用,加入到保有(posedo)集合
   Speakers.getOrPut(subject.id) { HashSet() }.add(group)
   // 获取目标群聊负责监听的Bot(rektoro)
@@ -49,7 +51,9 @@ suspend fun sendCommon(
         replyId = Db.getMsgId(subject.id, localId)
         null
       }
-      is At -> null
+      is At -> {
+        MessageType.Text(it.contentToString())
+      }
       else -> null
     }
   }
