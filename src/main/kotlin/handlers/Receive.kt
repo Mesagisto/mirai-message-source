@@ -12,8 +12,10 @@ import org.meowcat.mesagisto.mirai.* // ktlint-disable no-wildcard-imports
 object Receive {
   suspend fun recover() {
     Config.bindings.forEach {
-      Server.recv(it.key.toString(), it.value) handler@{ msg, id ->
-        return@handler mainHandler(msg as NatsMessage, id)
+      runCatching {
+        Server.recv(it.key.toString(), it.value) handler@{ msg, id ->
+          return@handler mainHandler(msg as NatsMessage, id)
+        }
       }
     }
   }
@@ -25,6 +27,9 @@ object Receive {
   suspend fun change(target: Long, address: String) {
     Server.unsub(target.toString())
     add(target, address)
+  }
+  suspend fun del(target: Long) {
+    Server.unsub(target.toString())
   }
 }
 

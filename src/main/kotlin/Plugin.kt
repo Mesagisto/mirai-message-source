@@ -50,6 +50,7 @@ object Plugin : KotlinPlugin(
     launch {
       Receive.recover()
     }
+
     listener = eventChannel.subscribeAlways(MiraiListener::handle)
     commandsListener = eventChannel.subscribeAlways(Command::handle)
     Logger.info { "Mesagisto信使已启用" }
