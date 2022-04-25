@@ -13,8 +13,8 @@ object Config : AutoSavePluginConfig("mesagisto") {
   val proxy: ProxyConfig by value()
   val bindings: MutableMap<Long, String> by value()
   private val targetChannelMapper: MutableMap<Long, String> by value()
-  fun mapper(target: Long): String? = targetChannelMapper[target]
-  fun mapper(target: Group): String? = targetChannelMapper[target.id]
+  fun mapper(target: Long): String? = bindings[target]
+  fun mapper(target: Group): String? = bindings[target.id]
   fun migrate() {
     bindings.putAll(targetChannelMapper)
     targetChannelMapper.clear()
