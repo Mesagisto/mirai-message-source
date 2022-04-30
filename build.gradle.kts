@@ -62,7 +62,7 @@ mirai {
 }
 dependencies {
   compileOnly("io.nats:jnats:2.14.0")
-  implementation("org.rocksdb:rocksdbjni:7.0.4")
+  implementation("org.rocksdb:rocksdbjni:7.1.2")
   implementation("com.github.gotson:webp-imageio:0.2.2")
 
   compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
