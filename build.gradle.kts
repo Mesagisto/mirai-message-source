@@ -1,9 +1,9 @@
 import shadow.org.apache.commons.io.FilenameUtils
 plugins {
   java
-  kotlin("jvm") version "1.6.21"
+  kotlin("jvm") version "1.6.0"
   id("com.github.johnrengelman.shadow") version "5.2.0"
-  kotlin("plugin.serialization") version "1.6.21"
+  kotlin("plugin.serialization") version "1.6.0"
   id("net.mamoe.mirai-console") version "2.10.0"
 }
 group = "org.meowcat"
@@ -76,9 +76,9 @@ dependencies {
 
   compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
   compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.3.2")
-  compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.2")
-  implementation("org.meowcat:mesagisto-client-jvm:1.3.2")
-  // implementation("org.meowcat:mesagisto-client:1.3.2-build1")
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.2.2")
+  compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.2.2")
+  implementation("org.meowcat:mesagisto-client-jvm:1.3.4")
+  // implementation("org.meowcat:mesagisto-client:1.3.4-fix")
   testCompileOnly("junit:junit:4.13.2")
 }
