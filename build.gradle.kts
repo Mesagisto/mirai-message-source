@@ -38,7 +38,14 @@ mirai {
         "kotlin/*",
         "kotlinx/coroutines/*",
         "kotlinx/serialization/*",
-        "org/bouncycastle/*"
+        "org/bouncycastle/*",
+        "org/jetbrains/*",
+        "org/intellij/*",
+        "META-INF/*.kotlin_module",
+        "META-INF/*.DSA",
+        "META-INF/versions/*",
+        "META-INF/maven/*",
+        "*.md",
       )
       val includeFiles = arrayOf(
         "kotlinx/serialization/cbor/*"
