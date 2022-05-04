@@ -1,4 +1,4 @@
-name: build
+name: beta
 on:
   push:
     branches: [ master ]
@@ -21,3 +21,14 @@ jobs:
 
       - name: Build
         run: bash build.sh
+
+      - name: Auto release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Beta Build"
+          files: |
+            packages/*.jar
+            LICENSE
