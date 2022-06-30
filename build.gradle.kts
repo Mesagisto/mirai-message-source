@@ -1,4 +1,3 @@
-import shadow.org.apache.commons.io.FilenameUtils
 plugins {
   java
   kotlin("jvm") version "1.6.0"
@@ -25,49 +24,6 @@ repositories {
 mirai {
   coreVersion = "2.12.0-RC"
   jvmTarget = JavaVersion.VERSION_1_8
-  excludeDependency("org.jetbrains.kotlin:kotlin-stdlib")
-  excludeDependency("org.jetbrains.kotlin:kotlin-reflect")
-  excludeDependency("org.jetbrains.kotlin:kotlin-stdlib-common")
-  excludeDependency("org.jetbrains:annotations")
-
-  configureShadow {
-
-    //   relocate("kotlinx.serialization.", "relocate.kotlinx.serialization.")
-    exclude { file ->
-      val excludeFiles = arrayOf(
-        "kotlin/*",
-        "kotlinx/coroutines/*",
-        "kotlinx/serialization/*",
-        "org/bouncycastle/*",
-        "org/jetbrains/*",
-        "org/intellij/*",
-        "META-INF/*.kotlin_module",
-        "META-INF/*.DSA",
-        "META-INF/versions/*",
-        "META-INF/maven/*",
-        "*.md",
-      )
-      val includeFiles = arrayOf(
-        "kotlinx/serialization/cbor/*"
-      )
-      var shouldExclude = false
-
-      excludeFiles.forEach first@{ excludeFile ->
-        if (FilenameUtils.wildcardMatch(file.path, excludeFile)) {
-          shouldExclude = true
-          includeFiles.forEach second@{ includeFile ->
-            if (FilenameUtils.wildcardMatch(file.path, includeFile)) {
-              shouldExclude = false
-              return@second
-            }
-          }
-          return@first
-        }
-      }
-      shouldExclude
-    }
-    minimize()
-  }
 }
 dependencies {
   compileOnly("io.nats:jnats:2.15.3")
