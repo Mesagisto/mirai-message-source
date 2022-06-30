@@ -8,7 +8,7 @@
 /plugins
 /bots
 /logs
-/data
+/debug-sandbox
 /.history
 /db
 packages

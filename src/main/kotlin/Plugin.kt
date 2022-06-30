@@ -12,6 +12,8 @@ import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import org.meowcat.mesagisto.client.*
 import org.meowcat.mesagisto.mirai.handlers.MiraiListener
 import org.meowcat.mesagisto.mirai.handlers.Receive
+import org.rocksdb.RocksDB
+import javax.imageio.ImageIO
 
 object Plugin : KotlinPlugin(
   JvmPluginDescription(
@@ -30,6 +32,12 @@ object Plugin : KotlinPlugin(
     if (!Config.enable) {
       logger.warning("Mesagisto信使未启用!")
       return
+    }
+    // SPI And JNI related things
+    run {
+      Thread.currentThread().contextClassLoader = jvmPluginClasspath.pluginClassLoader
+      ImageIO.scanForPlugins()
+      RocksDB.loadLibrary()
     }
     Logger.bridgeToMirai(logger)
     MesagistoConfig.builder {
