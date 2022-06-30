@@ -3,6 +3,7 @@ package org.meowcat.mesagisto.mirai.handlers
 import io.nats.client.impl.NatsMessage
 import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.message.data.QuoteReply
+import net.mamoe.mirai.message.data.plus
 import net.mamoe.mirai.message.data.toMessageChain
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import org.meowcat.mesagisto.client.*
@@ -55,7 +56,7 @@ private suspend fun leftSubHandler(
   val senderName = with(message.profile) { nick ?: username ?: id.toString() }
   var chain = message.chain.flatMap map@{ it ->
     when (it) {
-      is MessageType.Text -> listOf(PlainText("$senderName : ${it.content}"))
+      is MessageType.Text -> listOf(PlainText("${it.content}\n"))
       is MessageType.Image -> {
         val file = Cache.file(it.id, it.url, Config.mapper(group)!!).getOrThrow()
         val image = if (file.isWebp()) {
@@ -69,10 +70,11 @@ private suspend fun leftSubHandler(
         } else {
           file.toFile()
         }.uploadAsImage(group)
-        listOf(PlainText("$senderName:"), image)
+        listOf(image,PlainText("\n"))
       }
     }
   }.toMessageChain()
+  chain = PlainText("$senderName:").plus(chain)
   run {
     val replyId = message.reply ?: return@run
     val localId = Db.getMsgIdAsI32(target, replyId) ?: return@run

@@ -4,7 +4,7 @@ plugins {
   kotlin("jvm") version "1.6.0"
   id("com.github.johnrengelman.shadow") version "5.2.0"
   kotlin("plugin.serialization") version "1.6.0"
-  id("net.mamoe.mirai-console") version "2.10.0"
+  id("net.mamoe.mirai-console") version "2.12.0-RC"
 }
 group = "org.meowcat"
 version = "1.2.2"
@@ -23,7 +23,7 @@ repositories {
   mavenLocal()
 }
 mirai {
-  coreVersion = "2.10.0"
+  coreVersion = "2.12.0-RC"
   jvmTarget = JavaVersion.VERSION_1_8
   excludeDependency("org.jetbrains.kotlin:kotlin-stdlib")
   excludeDependency("org.jetbrains.kotlin:kotlin-reflect")
@@ -70,8 +70,9 @@ mirai {
   }
 }
 dependencies {
-  compileOnly("io.nats:jnats:2.14.0")
-  implementation("org.rocksdb:rocksdbjni:7.1.2")
+  compileOnly("io.nats:jnats:2.15.3")
+  implementation("org.rocksdb:rocksdbjni:7.2.2")
+  implementation("org.fusesource.leveldbjni:leveldbjni-all:1.8")
   implementation("com.github.gotson:webp-imageio:0.2.2")
 
   compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
