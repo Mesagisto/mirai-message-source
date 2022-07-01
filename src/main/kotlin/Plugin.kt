@@ -43,9 +43,7 @@ object Plugin : KotlinPlugin(
     MesagistoConfig.builder {
       name = "mirai"
       natsAddress = Config.nats.address
-      cipherEnable = Config.cipher.enable
       cipherKey = Config.cipher.key
-      cipherRefusePlain = Config.cipher.refusePlain
       proxyEnable = Config.proxy.enable
       proxyUri = Config.proxy.address
       resolvePhotoUrl = { uid, _ ->
