@@ -9,10 +9,10 @@ import net.mamoe.mirai.event.globalEventChannel
 import net.mamoe.mirai.event.subscribeAlways
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
+import org.fusesource.leveldbjni.internal.NativeDB
 import org.meowcat.mesagisto.client.*
 import org.meowcat.mesagisto.mirai.handlers.MiraiListener
 import org.meowcat.mesagisto.mirai.handlers.Receive
-import org.rocksdb.RocksDB
 import javax.imageio.ImageIO
 
 object Plugin : KotlinPlugin(
@@ -37,7 +37,7 @@ object Plugin : KotlinPlugin(
     run {
       Thread.currentThread().contextClassLoader = jvmPluginClasspath.pluginClassLoader
       ImageIO.scanForPlugins()
-      RocksDB.loadLibrary()
+      NativeDB.LIBRARY.load()
     }
     Logger.bridgeToMirai(logger)
     MesagistoConfig.builder {
