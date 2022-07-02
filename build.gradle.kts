@@ -29,8 +29,7 @@ dependencies {
   implementation("com.github.gotson:webp-imageio:0.2.2")
   compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
   compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
-
   compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.2.2")
-  implementation("org.mesagisto:mesagisto-client:1.4.2")
+  implementation("org.mesagisto:mesagisto-client:1.5.0")
   testCompileOnly("junit:junit:4.13.2")
 }
