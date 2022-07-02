@@ -42,15 +42,18 @@ suspend fun sendHandler(
         } else null
       }
       is Image -> {
-        Res.storePhotoId(it.imageId.toByteArray())
-        Cache.fileByUrl(it.imageId.toByteArray(), it.queryUrl()).getOrThrow()
-        MessageType.Image(it.imageId.toByteArray())
+        val imageID = it.imageId.toByteArray()
+        Res.storePhotoId(imageID)
+        Cache.fileByUrl(imageID, it.queryUrl()).getOrThrow()
+        MessageType.Image(imageID)
       }
-	  is FlashImage -> {
-		Res.storePhotoId(it.image.imageId.toByteArray())
-		Cache.fileByUrl(it.image.imageId.toByteArray(), it.image.queryUrl()).getOrThrow()
-		MessageType.Image(it.image.imageId.toByteArray())
-	  }
+      is FlashImage -> {
+        val image = it.image
+        val imageID = image.imageId.toByteArray()
+        Res.storePhotoId(imageID)
+        Cache.fileByUrl(imageID, image.queryUrl()).getOrThrow()
+        MessageType.Image(imageID)
+      }
       is QuoteReply -> {
         val localId = it.source.ids.first()
         replyId = Db.getMsgId(subject.id, localId)
