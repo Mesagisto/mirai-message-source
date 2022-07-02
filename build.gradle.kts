@@ -31,5 +31,6 @@ dependencies {
   compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
   compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.2.2")
   implementation("org.mesagisto:mesagisto-client:1.5.0")
-  testCompileOnly("junit:junit:4.13.2")
+  testImplementation("junit:junit:4.13.2")
+  testImplementation("org.hamcrest:hamcrest:2.2")
 }
