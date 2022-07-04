@@ -71,3 +71,15 @@ inline fun Db.getMsgIdAsI32(
   target: Long,
   id: ByteArray
 ): Int? = getMsgId(target, id)?.toI32()
+
+inline fun switch(classLoader: ClassLoader, fn: () -> Result<Unit>): Result<Unit> {
+  val origin = Thread.currentThread().contextClassLoader
+  Thread.currentThread().contextClassLoader = classLoader
+  return try {
+    fn.invoke()
+  } catch (t: Throwable) {
+    Result.failure(t)
+  } finally {
+    Thread.currentThread().contextClassLoader = origin
+  }
+}

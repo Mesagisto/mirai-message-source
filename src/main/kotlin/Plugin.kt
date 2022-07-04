@@ -34,11 +34,12 @@ object Plugin : KotlinPlugin(
       return
     }
     // SPI And JNI related things
-    run {
-      Thread.currentThread().contextClassLoader = jvmPluginClasspath.pluginClassLoader
+    switch(jvmPluginClasspath.pluginClassLoader) {
       ImageIO.scanForPlugins()
       NativeDB.LIBRARY.load()
-    }
+      Result.success(Unit)
+    }.getOrThrow()
+
     Logger.bridgeToMirai(logger)
     MesagistoConfig.builder {
       name = "mirai"
