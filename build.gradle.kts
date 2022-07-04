@@ -7,7 +7,6 @@ plugins {
 }
 group = "org.meowcat"
 version = "1.3.0"
-
 tasks.compileKotlin {
   kotlinOptions {
     jvmTarget = "1.8"
