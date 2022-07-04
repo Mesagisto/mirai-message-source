@@ -34,7 +34,7 @@ object Plugin : KotlinPlugin(
       return
     }
     // SPI And JNI related things
-    switch(jvmPluginClasspath.pluginSharedLibrariesClassLoader) {
+    switch(jvmPluginClasspath.pluginClassLoader) {
       ImageIO.scanForPlugins()
       NativeDB.LIBRARY.load()
       Result.success(Unit)
