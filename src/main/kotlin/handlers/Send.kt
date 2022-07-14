@@ -25,6 +25,8 @@ suspend fun sendHandler(
   val listener = Listeners.getOrPut(subject.id) { bot }
   // 若不是负责人则返回
   if (listener != bot) return
+  // 若在黑名单则返回
+  if (sender.id in Config.blacklist) return
   // 保存聊天记录用于引用回复
   MiraiDb.putMsgSource(event.source)
   // 构建消息
