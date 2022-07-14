@@ -4,8 +4,6 @@ import kotlinx.coroutines.launch
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.event.*
-import net.mamoe.mirai.event.events.BotOnlineEvent
-import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import org.fusesource.leveldbjni.internal.NativeDB
@@ -56,10 +54,10 @@ object Plugin : KotlinPlugin(
       Receive.recover()
     }
     listeners.apply {
-      add(eventChannel.subscribeAlways(MiraiListener::handle))
+      add(eventChannel.subscribeAlways(MiraiListener::handle, EventPriority.LOWEST))
       add(eventChannel.subscribeAlways(MultiBot::handleBotOnline))
       add(eventChannel.subscribeAlways(MultiBot::handleBotJoinGroup))
-      add(eventChannel.subscribeAlways(Command::handle))
+      add(eventChannel.subscribeAlways(Command::handle, EventPriority.LOWEST))
     }
     Logger.info { "Mesagisto信使已启用" }
   }
