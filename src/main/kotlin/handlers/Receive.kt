@@ -9,6 +9,7 @@ import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import org.meowcat.mesagisto.client.*
 import org.meowcat.mesagisto.client.data.* // ktlint-disable no-wildcard-imports
 import org.meowcat.mesagisto.mirai.* // ktlint-disable no-wildcard-imports
+import org.meowcat.mesagisto.mirai.MultiBot.Speakers
 
 object Receive {
   suspend fun recover() {

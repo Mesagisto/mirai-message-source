@@ -8,7 +8,7 @@ import org.meowcat.mesagisto.client.* // ktlint-disable no-wildcard-imports
 import org.meowcat.mesagisto.client.data.* // ktlint-disable no-wildcard-imports
 import org.meowcat.mesagisto.client.data.Message
 import org.meowcat.mesagisto.mirai.*
-import kotlin.collections.HashSet
+import org.meowcat.mesagisto.mirai.MultiBot.Listeners
 
 object MiraiListener {
   suspend fun handle(event: GroupMessageEvent) {
@@ -21,13 +21,11 @@ suspend fun sendHandler(
 ): Unit = with(event) {
   // 获取目标群聊的信使地址,若不存在则返回
   val natsAddress = Config.bindings[subject.id] ?: return
-  // 此Bot能接收到消息说明该bot可用,加入到保有(posedo)集合
-  Speakers.getOrPut(subject.id) { HashSet() }.add(group)
-  // 获取目标群聊负责监听的Bot(rektoro)
-  val rektoro = Listener.getOrPut(subject.id) { bot }
+  // 获取目标群聊负责监听的Bot
+  val listener = Listeners.getOrPut(subject.id) { bot }
   // 若不是负责人则返回
-  if (rektoro != bot) return
-
+  if (listener != bot) return
+  // 保存聊天记录用于引用回复
   MiraiDb.putMsgSource(event.source)
   // 构建消息
   val msgId = message.ids.first()

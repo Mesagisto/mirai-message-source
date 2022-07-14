@@ -3,10 +3,9 @@ package org.meowcat.mesagisto.mirai
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
-import net.mamoe.mirai.event.Listener
+import net.mamoe.mirai.event.*
+import net.mamoe.mirai.event.events.BotOnlineEvent
 import net.mamoe.mirai.event.events.GroupMessageEvent
-import net.mamoe.mirai.event.globalEventChannel
-import net.mamoe.mirai.event.subscribeAlways
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import org.fusesource.leveldbjni.internal.NativeDB
@@ -23,14 +22,13 @@ object Plugin : KotlinPlugin(
   )
 ) {
   private val eventChannel = globalEventChannel()
-  private lateinit var listener: Listener<GroupMessageEvent>
-  private lateinit var commandsListener: Listener<GroupMessageEvent>
+  private val listeners: MutableList<Listener<*>> = arrayListOf()
 
   override fun onEnable() {
     Config.reload()
     Config.migrate()
     if (!Config.enable) {
-      logger.warning("Mesagisto信使未启用!")
+      logger.error("Mesagisto信使未启用!")
       return
     }
     // SPI And JNI related things
@@ -57,16 +55,20 @@ object Plugin : KotlinPlugin(
     launch {
       Receive.recover()
     }
-
-    listener = eventChannel.subscribeAlways(MiraiListener::handle)
-    commandsListener = eventChannel.subscribeAlways(Command::handle)
+    listeners.apply {
+      add(eventChannel.subscribeAlways(MiraiListener::handle))
+      add(eventChannel.subscribeAlways(MultiBot::handleBotOnline))
+      add(eventChannel.subscribeAlways(MultiBot::handleBotJoinGroup))
+      add(eventChannel.subscribeAlways(Command::handle))
+    }
     Logger.info { "Mesagisto信使已启用" }
   }
 
   override fun onDisable() {
     if (!Config.enable) return
-    listener.complete()
-    commandsListener.complete()
+    listeners.forEach {
+      it.complete()
+    }
     Logger.info { "Mesagisto信使已禁用" }
   }
 }

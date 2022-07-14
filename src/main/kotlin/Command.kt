@@ -29,6 +29,7 @@ object Command {
           /f bind 114514、/信使 绑定 114514 等
           ------  列表  ------
           /f help = /信使 帮助
+          /f bind = /信使 绑定
           /f unbind = /信使 解绑
           /f about = /信使 关于
           /f status = /信使 状态
