@@ -21,13 +21,7 @@ object Command {
     if (!text.startsWith("/信使") and !text.startsWith("/f")) return
     val args = text.split(" ")
     when (args.getOrNull(1)) {
-      "bind", "绑定" -> {
-        sender.bindChannel(args.getOrNull(2))
-      }
-      "unbind", "解绑" -> {
-        sender.unbindChannel()
-      }
-      "help", "帮助" -> {
+      "help", "帮助", null -> {
         val reply = message.quote() + """
           未知指令
           ------  用法  ------
@@ -45,6 +39,12 @@ object Command {
         """.trimIndent()
         group.sendMessage(reply)
       }
+      "bind", "绑定" -> {
+        sender.bindChannel(args.getOrNull(2))
+      }
+      "unbind", "解绑" -> sender.unbindChannel()
+      "about", "关于" -> sender.about()
+      "status", "状态" -> sender.status()
     }
   }
 
@@ -62,5 +62,11 @@ object Command {
     Config.bindings.remove(group.id)
     Receive.del(group.id)
     group.sendMessage("已解绑本群的信使频道")
+  }
+  private suspend fun Member.about() {
+    group.sendMessage("GitHub项目主页 https://github.com/MeowCat-Studio/mesagisto")
+  }
+  private suspend fun Member.status() {
+    group.sendMessage("唔... 也许是在正常运行?")
   }
 }
