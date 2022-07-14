@@ -8,6 +8,12 @@ import org.meowcat.mesagisto.mirai.handlers.Receive
 
 object Command {
   suspend fun handle(event: GroupMessageEvent): Unit = event.run {
+    // 如果事件取消, 则跳出处理流程
+    if (event.isCancelled) return@run
+    // 如果严格模式开启且发送者不在名单内, 则跳出处理流程
+    if (Config.perm.strict) {
+      if (!Config.perm.users.contains(event.sender.id)) return@run
+    }
     val text = event.message.contentToString()
     if (!text.startsWith("/信使") and !text.startsWith("/f")) return
     val args = text.split(" ")

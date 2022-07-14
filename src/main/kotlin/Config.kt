@@ -11,6 +11,7 @@ object Config : AutoSavePluginConfig("mesagisto") {
   val cipher: CipherConfig by value()
   val proxy: ProxyConfig by value()
   val bindings: MutableMap<Long, String> by value()
+  val perm: PermConfig by value()
   private val targetChannelMapper: MutableMap<Long, String> by value()
   fun mapper(target: Long): String? = bindings[target]
   fun mapper(target: Group): String? = bindings[target.id]
@@ -19,6 +20,12 @@ object Config : AutoSavePluginConfig("mesagisto") {
     targetChannelMapper.clear()
   }
 }
+
+@Serializable
+data class PermConfig(
+  val strict: Boolean = false,
+  val users: List<Long> = listOf(123456)
+)
 
 @Serializable
 data class NatsConfig(
