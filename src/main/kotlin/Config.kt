@@ -10,7 +10,7 @@ object Config : AutoSavePluginConfig("mesagisto") {
   val nats: NatsConfig by value()
   val cipher: CipherConfig by value()
   val proxy: ProxyConfig by value()
-  val blacklist: List<String> by value(listOf("114514114514"))
+  val blacklist: List<Long> by value(114514114514)
   val bindings: MutableMap<Long, String> by value()
   val perm: PermConfig by value()
   private val targetChannelMapper: MutableMap<Long, String> by value()
