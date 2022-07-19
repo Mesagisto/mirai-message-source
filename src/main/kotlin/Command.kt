@@ -5,6 +5,7 @@ import net.mamoe.mirai.contact.isOperator
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.MessageSource.Key.quote
 import org.meowcat.mesagisto.mirai.handlers.Receive
+import kotlin.text.toLong
 
 object Command {
   suspend fun handle(event: GroupMessageEvent): Unit = event.run {
@@ -36,6 +37,8 @@ object Command {
           /f unbind = /信使 解绑
           /f about = /信使 关于
           /f status = /信使 状态
+          /f ban = /信使 封禁
+          /f unban = /信使 解封
         """.trimIndent()
         group.sendMessage(reply)
       }
@@ -45,6 +48,24 @@ object Command {
       "unbind", "解绑" -> sender.unbindChannel()
       "about", "关于" -> sender.about()
       "status", "状态" -> sender.status()
+      "ban", "封禁" -> {
+        try {
+          sender.ban(args.get(2).toLong())
+        } catch (e: NumberFormatException) {
+          group.sendMessage("参数不合法，请提供一个QQ号")
+        } catch (e: IndexOutOfBoundsException) {
+          group.sendMessage("缺少参数，请提供一个QQ号")
+        }
+      }
+      "unban", "解封" -> {
+        try {
+          sender.unban(args.get(2).toLong())
+        } catch (e: NumberFormatException) {
+          group.sendMessage("参数不合法，请提供一个QQ号")
+        } catch (e: IndexOutOfBoundsException) {
+          group.sendMessage("缺少参数，请提供一个QQ号")
+        }
+      }
     }
   }
 
@@ -68,5 +89,21 @@ object Command {
   }
   private suspend fun Member.status() {
     group.sendMessage("唔... 也许是在正常运行?")
+  }
+  private suspend fun Member.ban(id: Long) {
+    if (Config.blacklist.contains(id)) {
+      group.sendMessage("$id 已经被封禁了")
+    } else {
+      Config.blacklist.add(id)
+      group.sendMessage("已成功封禁：$id")
+    }
+  }
+  private suspend fun Member.unban(id: Long) {
+    if (Config.blacklist.contains(id)) {
+      Config.blacklist.remove(id)
+      group.sendMessage("已成功解封：$id")
+    } else {
+      group.sendMessage("$id 没有被封禁")
+    }
   }
 }
