@@ -10,7 +10,7 @@ object Config : AutoSavePluginConfig("mesagisto") {
   val nats: NatsConfig by value()
   val cipher: CipherConfig by value()
   val proxy: ProxyConfig by value()
-  val blacklist: List<Long> by value(listOf(114514114514))
+  val blacklist: MutableList<Long> by value(mutableListOf(114514114514))
   val bindings: MutableMap<Long, String> by value()
   val perm: PermConfig by value()
   private val targetChannelMapper: MutableMap<Long, String> by value()
@@ -32,11 +32,13 @@ data class PermConfig(
 data class NatsConfig(
   val address: String = "nats://nats.mesagisto.org:4222"
 )
+
 @Serializable
 data class ProxyConfig(
   val enable: Boolean = false,
   val address: String = "http://127.0.0.1:7890"
 )
+
 @Serializable
 data class CipherConfig(
   val key: String = "default"
