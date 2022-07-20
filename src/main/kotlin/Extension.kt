@@ -1,4 +1,5 @@
 @file:Suppress("NOTHING_TO_INLINE")
+
 package org.meowcat.mesagisto.mirai
 
 import com.luciad.imageio.webp.WebPReadParam

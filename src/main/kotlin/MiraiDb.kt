@@ -18,6 +18,7 @@ object MiraiDb : AutoCloseable {
   private val msgSrcDbMap by lazy {
     ConcurrentHashMap<Long, DB>()
   }
+
   @OptIn(ExperimentalSerializationApi::class)
   fun putMsgSource(source: MessageSource) {
     val msgSrcDb = msgSrcDbMap.getOrPut(source.targetId) {
@@ -31,6 +32,7 @@ object MiraiDb : AutoCloseable {
       MiraiProtoBuf.encodeToByteArray(MessageSource.serializer(), source)
     )
   }
+
   @OptIn(ExperimentalSerializationApi::class)
   fun getMsgSource(target: Long, id: Int): MessageSource? {
     val msgSrcDb = msgSrcDbMap[target] ?: return null
