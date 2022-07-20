@@ -39,6 +39,10 @@ object Command {
           /f status = /信使 状态
           /f ban = /信使 封禁
           /f unban = /信使 解封
+          /f disable group = /信使 禁用 群组
+          /f enable group = /信使 启用 群组
+          /f disable channel = /信使 禁用 频道
+          /f enable channel = /信使 启用 频道
         """.trimIndent()
         group.sendMessage(reply)
       }
@@ -65,6 +69,12 @@ object Command {
         } catch (e: IndexOutOfBoundsException) {
           group.sendMessage("缺少参数，请提供一个QQ号")
         }
+      }
+      "disable", "禁用" -> {
+        sender.disable(args.getOrNull(2))
+      }
+      "enable", "启用" -> {
+        sender.enable(args.getOrNull(2))
       }
     }
   }
@@ -104,6 +114,66 @@ object Command {
       group.sendMessage("已成功解封：$id")
     } else {
       group.sendMessage("$id 没有被封禁")
+    }
+  }
+  private suspend fun Member.disable(type: String?) {
+    when (type) {
+      null -> group.sendMessage("请提供参数channel或group")
+      "group", "群组" -> {
+        if (Config.disablegroup.contains(group.id)) {
+          group.sendMessage("此群组已经禁用过信使了")
+          return
+        }
+        if (Config.bindings.get(group.id) == null) {
+          group.sendMessage("此群组不存在信使频道，无需禁用")
+          return
+        }
+        Config.disablegroup.add(group.id)
+        group.sendMessage("已为此群组禁用信使")
+      }
+      "channel", "频道" -> {
+        if (Config.bindings.get(group.id) == null) {
+          group.sendMessage("此群组不存在信使频道，无需禁用")
+          return
+        }
+        val channel: String = Config.bindings.get(group.id).toString()
+        if (Config.disablechannel.contains(channel)) {
+          group.sendMessage("已经在此频道mirai侧禁用过信使了")
+          return
+        }
+        Config.disablechannel.add(channel)
+        group.sendMessage("已为此频道mirai侧禁用信使")
+      }
+    }
+  }
+  private suspend fun Member.enable(type: String?) {
+    when (type) {
+      null -> group.sendMessage("请提供参数channel或group")
+      "group", "群组" -> {
+        if (Config.bindings.get(group.id) == null) {
+          group.sendMessage("此群组不存在信使频道，无需操作")
+          return
+        }
+        if (!Config.disablegroup.contains(group.id)) {
+          group.sendMessage("此群组未禁用信使")
+          return
+        }
+        Config.disablegroup.remove(group.id)
+        group.sendMessage("已为此群组启用信使")
+      }
+      "channel", "频道" -> {
+        if (Config.bindings.get(group.id) == null) {
+          group.sendMessage("此群组不存在信使频道，无需操作")
+          return
+        }
+        val channel: String = Config.bindings.get(group.id).toString()
+        if (!Config.disablechannel.contains(channel)) {
+          group.sendMessage("此频道mirai侧未禁用信使")
+          return
+        }
+        Config.disablechannel.remove(channel)
+        group.sendMessage("此频道mirai侧信使已解禁")
+      }
     }
   }
 }

@@ -54,6 +54,8 @@ private suspend fun leftSubHandler(
   target: Long
 ): Result<Unit> = runCatching fn@{
   val group = Speakers[target]?.random() ?: return@fn
+  if (Config.disablegroup.contains(group.id)) return@fn
+  if (Config.disablechannel.contains(Config.bindings.get(group.id))) return@fn
   val senderName = with(message.profile) { nick ?: username ?: id.toString() }
   var chain = message.chain.flatMap map@{ it ->
     when (it) {

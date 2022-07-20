@@ -12,6 +12,8 @@ object Config : AutoSavePluginConfig("mesagisto") {
   val proxy: ProxyConfig by value()
   val blacklist: MutableList<Long> by value(mutableListOf(114514114514))
   val bindings: MutableMap<Long, String> by value()
+  val disablegroup: MutableList<Long> by value(mutableListOf(114514114514))
+  val disablechannel: MutableList<String> by value(mutableListOf("114514114514"))
   val perm: PermConfig by value()
   private val targetChannelMapper: MutableMap<Long, String> by value()
   fun mapper(target: Long): String? = bindings[target]
