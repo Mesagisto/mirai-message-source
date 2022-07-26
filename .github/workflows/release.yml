@@ -47,7 +47,7 @@ jobs:
           chmod +x gradlew
           ./gradlew clean checkMavenCentralPublication
           ./gradlew build publish
-          # ./gradlew closeAndReleaseRepository
+          ./gradlew closeAndReleaseRepository
 
       - name: Clone Mirai-Repo
         env:
@@ -64,6 +64,7 @@ jobs:
       - name: Get the version tag
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
+
       - name: Render package.json
         uses: cuchi/jinja2-action@v1.2.0
         with:
@@ -82,9 +83,6 @@ jobs:
           git add org/mesagisto/mirai-message-source/package.json
           git commit -m "bump mirai-message-source version"
           git push origin master
-          # gh pr create --fill --repo project-mirai/mirai-repo-mirror
+          gh pr create --fill --repo project-mirai/mirai-repo-mirror
           cd ../..
           rm -rf .github/mirai-repo-mirror
-          rm .github/package.json
-
-          
