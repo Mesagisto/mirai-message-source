@@ -22,7 +22,7 @@ import kotlin.io.path.*
 
 object Plugin : KotlinPlugin(
   JvmPluginDescription(
-    id = "org.mesagisto.mirai-bot",
+    id = "org.mesagisto.mirai-message-source",
     name = "Mesagisto-Mirai",
     version = "1.0-unknown"
   )
@@ -34,7 +34,7 @@ object Plugin : KotlinPlugin(
     // prepare for next version
     val oldConfig = Path("config/org.meowcat.mesagisto/mesagisto.yml")
     if (oldConfig.exists()) {
-      val newConfig = Path("config/org.mesagisto.mirai-bot/config.yml")
+      val newConfig = Path("config/org.mesagisto.mirai-message-source/config.yml")
       newConfig.parent.createDirectories()
       oldConfig.moveTo(newConfig, true)
     }
