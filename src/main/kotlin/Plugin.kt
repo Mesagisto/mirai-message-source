@@ -1,6 +1,12 @@
 package org.meowcat.mesagisto.mirai
 
 import kotlinx.coroutines.launch
+import net.mamoe.mirai.console.command.CommandManager
+import net.mamoe.mirai.console.permission.AbstractPermitteeId
+import net.mamoe.mirai.console.permission.Permission
+import net.mamoe.mirai.console.permission.PermissionService
+import net.mamoe.mirai.console.plugin.PluginManager
+import net.mamoe.mirai.console.plugin.id
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.event.*
@@ -57,16 +63,37 @@ object Plugin : KotlinPlugin(
       add(eventChannel.subscribeAlways(MiraiListener::handle, EventPriority.LOWEST))
       add(eventChannel.subscribeAlways(MultiBot::handleBotOnline))
       add(eventChannel.subscribeAlways(MultiBot::handleBotJoinGroup))
-      add(eventChannel.subscribeAlways(Command::handle, EventPriority.LOWEST))
     }
-    Logger.info { "Mesagisto信使已启用" }
+    CommandManager.registerCommand(Command)
+    val service: PermissionService<Permission> = PermissionService.INSTANCE as PermissionService<Permission>
+    runCatching {
+      service.cancel(AbstractPermitteeId.AnyUser, Plugin.parentPermission, true)
+    }
+    if (Config.perm.strict) {
+      Logger.info { "信使的严格模式已开启, 信使仅对名单内用户指令作出响应" }
+      Config.perm.users.forEach { user ->
+        service.permit(AbstractPermitteeId.parseFromString("u$user"), Plugin.parentPermission)
+      }
+    } else {
+      Logger.info { "信使的严格模式已关闭, 信使指令可被任意用户调用, 但敏感操作仅允许群组管理员进行." }
+      service.permit(AbstractPermitteeId.AnyUser, Plugin.parentPermission)
+    }
+    if (PluginManager.plugins.find {
+      it.id == "net.mamoe.mirai.console.chat-command"
+    } == null
+    ) {
+      Logger.error { "注册指令成功, 但依赖需要 chat-command,否则无法在聊天环境内执行命令" }
+    } else {
+      Logger.info { "注册指令成功" }
+    }
+    Logger.info { "Mirai信使已启用" }
   }
 
   override fun onDisable() {
-    if (!Config.enable) return
     listeners.forEach {
       it.complete()
     }
-    Logger.info { "Mesagisto信使已禁用" }
+    CommandManager.unregisterCommand(Command)
+    Logger.info { "Mirai信使已禁用" }
   }
 }
