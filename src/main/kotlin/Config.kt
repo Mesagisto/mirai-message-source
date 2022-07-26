@@ -6,7 +6,7 @@ import net.mamoe.mirai.console.data.ValueName
 import net.mamoe.mirai.console.data.value
 import net.mamoe.mirai.contact.Group
 
-object Config : AutoSavePluginConfig("mesagisto") {
+object Config : AutoSavePluginConfig("config") {
   val nats: NatsConfig by value()
   val cipher: CipherConfig by value()
   val proxy: ProxyConfig by value()

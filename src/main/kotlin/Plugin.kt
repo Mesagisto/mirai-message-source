@@ -2,6 +2,7 @@ package org.meowcat.mesagisto.mirai
 
 import kotlinx.coroutines.launch
 import net.mamoe.mirai.console.command.CommandManager
+import net.mamoe.mirai.console.extension.PluginComponentStorage
 import net.mamoe.mirai.console.permission.AbstractPermitteeId
 import net.mamoe.mirai.console.permission.Permission
 import net.mamoe.mirai.console.permission.PermissionService
@@ -17,17 +18,27 @@ import org.meowcat.mesagisto.client.*
 import org.meowcat.mesagisto.mirai.handlers.MiraiListener
 import org.meowcat.mesagisto.mirai.handlers.Receive
 import javax.imageio.ImageIO
+import kotlin.io.path.*
 
 object Plugin : KotlinPlugin(
   JvmPluginDescription(
-    id = "org.meowcat.mesagisto",
-    name = "Mesagisto",
+    id = "org.mesagisto.mirai-bot",
+    name = "Mesagisto-Mirai",
     version = "1.0-unknown"
   )
 ) {
   private val eventChannel = globalEventChannel()
   private val listeners: MutableList<Listener<*>> = arrayListOf()
 
+  override fun PluginComponentStorage.onLoad() {
+    // prepare for next version
+    val oldConfig = Path("config/org.meowcat.mesagisto/mesagisto.yml")
+    if (oldConfig.exists()) {
+      val newConfig = Path("config/org.mesagisto.mirai-bot/config.yml")
+      newConfig.parent.createDirectories()
+      oldConfig.moveTo(newConfig, true)
+    }
+  }
   override fun onEnable() {
     Config.reload()
     Config.migrate()

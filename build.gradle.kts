@@ -5,7 +5,7 @@ plugins {
   kotlin("plugin.serialization") version "1.6.0"
   id("net.mamoe.mirai-console") version "2.12.0"
 }
-group = "org.meowcat"
+group = "org.mesagisto"
 version = "1.4.0"
 tasks.compileKotlin {
   kotlinOptions {
