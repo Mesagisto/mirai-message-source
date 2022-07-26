@@ -87,9 +87,10 @@ object Plugin : KotlinPlugin(
       Logger.info { "信使的严格模式已关闭, 信使指令可被任意用户调用, 但敏感操作仅允许群组管理员进行." }
       service.permit(AbstractPermitteeId.AnyUser, Plugin.parentPermission)
     }
-    if (PluginManager.plugins.find {
-      it.id == "net.mamoe.mirai.console.chat-command"
-    } == null
+    if (
+      PluginManager.plugins.find {
+        it.id == "net.mamoe.mirai.console.chat-command"
+      } == null
     ) {
       Logger.error { "注册指令成功, 但依赖需要 chat-command,否则无法在聊天环境内执行命令" }
     } else {

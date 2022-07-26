@@ -39,7 +39,7 @@ object Command : CompositeCommand(
   @SubCommand("ban", "封禁")
   suspend fun MemberCommandSender.ban(user: User) {
     if (!MultiBot.shouldReact(group, bot)) return
-    if (Config.perm.strict || !Config.perm.users.contains(user.id)) {
+    if (!Config.perm.strict || !Config.perm.users.contains(user.id)) {
       group.sendMessage("信使的严格模式未启用 或 您不是本Mirai信使Bot的管理员")
       return
     }
@@ -54,7 +54,7 @@ object Command : CompositeCommand(
   @SubCommand("unban", "解封")
   suspend fun MemberCommandSender.unban(user: User) {
     if (!MultiBot.shouldReact(group, bot)) return
-    if (Config.perm.strict || !Config.perm.users.contains(user.id)) {
+    if (!Config.perm.strict || !Config.perm.users.contains(user.id)) {
       group.sendMessage("信使的严格模式未启用 或 您不是本Mirai信使Bot的管理员")
       return
     }
@@ -81,7 +81,7 @@ object Command : CompositeCommand(
   @SubCommand("disable", "禁用")
   suspend fun MemberCommandSender.disable(@Name("group/channel") type: String) {
     if (!MultiBot.shouldReact(group, bot)) return
-    if (Config.perm.strict || !Config.perm.users.contains(user.id)) {
+    if (!Config.perm.strict || !Config.perm.users.contains(user.id)) {
       group.sendMessage("信使的严格模式未启用 或 您不是本Mirai信使Bot的管理员")
       return
     }
@@ -121,7 +121,7 @@ object Command : CompositeCommand(
   @SubCommand("enable", "启用")
   suspend fun MemberCommandSender.enable(@Name("group/channel") type: String) {
     if (!MultiBot.shouldReact(group, bot)) return
-    if (Config.perm.strict || !Config.perm.users.contains(user.id)) {
+    if (!Config.perm.strict || !Config.perm.users.contains(user.id)) {
       group.sendMessage("信使的严格模式未启用 或 您不是本Mirai信使Bot的管理员")
       return
     }
