@@ -1,19 +1,25 @@
 package org.meowcat.mesagisto.mirai
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.console.data.AutoSavePluginConfig
+import net.mamoe.mirai.console.data.ValueName
 import net.mamoe.mirai.console.data.value
 import net.mamoe.mirai.contact.Group
 
 object Config : AutoSavePluginConfig("mesagisto") {
-  val enable: Boolean by value()
   val nats: NatsConfig by value()
   val cipher: CipherConfig by value()
   val proxy: ProxyConfig by value()
   val blacklist: MutableList<Long> by value(mutableListOf(114514114514))
   val bindings: MutableMap<Long, String> by value()
-  val disablegroup: MutableList<Long> by value(mutableListOf(114514114514))
-  val disablechannel: MutableList<String> by value(mutableListOf("114514114514"))
+
+  @ValueName("disablegroup")
+  val disableGroup: MutableList<Long> by value(mutableListOf(114514114514))
+
+  @ValueName("disablechannel")
+  val disableChannel: MutableList<String> by value(mutableListOf("114514114514"))
+
   val perm: PermConfig by value()
   private val targetChannelMapper: MutableMap<Long, String> by value()
   fun mapper(target: Long): String? = bindings[target]

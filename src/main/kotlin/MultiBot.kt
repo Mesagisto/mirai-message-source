@@ -1,10 +1,12 @@
 package org.meowcat.mesagisto.mirai
 
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.events.BotJoinGroupEvent
 import net.mamoe.mirai.event.events.BotLeaveEvent
 import net.mamoe.mirai.event.events.BotOnlineEvent
+import org.meowcat.mesagisto.client.Logger
 import java.util.concurrent.ConcurrentHashMap
 
 object MultiBot {
@@ -22,7 +24,16 @@ object MultiBot {
   fun handleBotLeaveGroup(event: BotLeaveEvent) {
     delBot(event.bot)
   }
+
+  /**
+   * check should a bot respond to an event
+   */
+  fun shouldReact(scope: Contact, bot: Bot): Boolean {
+    return Listeners.containsKey(scope.id) && Listeners[scope.id] == bot
+  }
+
   private fun addBot(bot: Bot) {
+    Logger.info { "Bot${bot.id} Online, configuring multi-bot" }
     delBot(bot)
     bot.groups.forEach {
       Listeners[it.id] = bot

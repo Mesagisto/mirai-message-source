@@ -3,7 +3,6 @@ package org.meowcat.mesagisto.mirai.handlers
 import io.nats.client.impl.NatsMessage
 import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.message.data.QuoteReply
-import net.mamoe.mirai.message.data.plus
 import net.mamoe.mirai.message.data.toMessageChain
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import org.meowcat.mesagisto.client.*
@@ -54,8 +53,8 @@ private suspend fun leftSubHandler(
   target: Long
 ): Result<Unit> = runCatching fn@{
   val group = Speakers[target]?.random() ?: return@fn
-  if (Config.disablegroup.contains(group.id)) return@fn
-  if (Config.disablechannel.contains(Config.bindings.get(group.id))) return@fn
+  if (Config.disableGroup.contains(group.id)) return@fn
+  if (Config.disableChannel.contains(Config.bindings[group.id])) return@fn
   val senderName = with(message.profile) { nick ?: username ?: id.toString() }
   var chain = message.chain.flatMap map@{ it ->
     when (it) {
@@ -63,7 +62,7 @@ private suspend fun leftSubHandler(
       is MessageType.Image -> {
         val file = Cache.file(it.id, it.url, Config.mapper(group)!!).getOrThrow()
         val image = if (file.isWebp()) {
-          Logger.debug { "图片为QQ不支持的WEBP格式,正在转化为PNG格式..." }
+          Logger.debug { "图片为QQ不支持的WEBP格式,正在转为PNG格式..." }
           Res.convertFile(it.id) { from, to ->
             runCatching {
               convertWebpToPng(from, to)

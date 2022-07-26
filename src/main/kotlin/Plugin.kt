@@ -31,17 +31,15 @@ object Plugin : KotlinPlugin(
   override fun onEnable() {
     Config.reload()
     Config.migrate()
-    if (!Config.enable) {
-      logger.error("Mesagisto信使未启用!")
-      return
-    }
+
+    logger.info("正在加载Webp解析库 & LevelDB")
     // SPI And JNI related things
     switch(jvmPluginClasspath.pluginClassLoader) {
       ImageIO.scanForPlugins()
       NativeDB.LIBRARY.load()
       Result.success(Unit)
     }.getOrThrow()
-
+    logger.info("正在桥接信使日志系统")
     Logger.bridgeToMirai(logger)
     MesagistoConfig.builder {
       name = "mirai"
