@@ -42,14 +42,20 @@ suspend fun sendHandler(
       is Image -> {
         val imageID = it.imageId.toByteArray()
         Res.storePhotoId(imageID)
-        Cache.fileByUrl(imageID, it.queryUrl()).getOrThrow()
+        // 拼装消息与下载图片异步进行
+        Plugin.launch {
+          Cache.fileByUrl(imageID, it.queryUrl()).getOrThrow()
+        }
         MessageType.Image(imageID)
       }
       is FlashImage -> {
         val image = it.image
         val imageID = image.imageId.toByteArray()
         Res.storePhotoId(imageID)
-        Cache.fileByUrl(imageID, image.queryUrl()).getOrThrow()
+        // 拼装消息与下载图片异步进行
+        Plugin.launch {
+          Cache.fileByUrl(imageID, image.queryUrl()).getOrThrow()
+        }
         MessageType.Image(imageID)
       }
       is QuoteReply -> {
@@ -69,6 +75,7 @@ suspend fun sendHandler(
       sender.id.toByteArray(),
       // 等待Mirai实现QID
       sender.id.toString(),
+      // TODO Unicode空白控制符
       sender.nameCardOrNick.ifEmpty { null }
     ),
     id = msgId.toByteArray(),
