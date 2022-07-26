@@ -1,6 +1,5 @@
 package org.meowcat.mesagisto.mirai
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.console.data.AutoSavePluginConfig
 import net.mamoe.mirai.console.data.ValueName

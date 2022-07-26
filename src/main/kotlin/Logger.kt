@@ -1,4 +1,4 @@
-package org.meowcat.mesagisto.mirai
+package org.meowcat.mesagisto.mirai // ktlint-disable filename
 
 import net.mamoe.mirai.utils.MiraiLogger
 import org.meowcat.mesagisto.client.ILogger
