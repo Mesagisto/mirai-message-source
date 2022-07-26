@@ -4,9 +4,26 @@ plugins {
   id("com.github.johnrengelman.shadow") version "6.0.0"
   kotlin("plugin.serialization") version "1.6.0"
   id("net.mamoe.mirai-console") version "2.12.0"
+
+  id("me.him188.maven-central-publish") version "1.0.0-dev-3"
+  id("io.codearte.nexus-staging") version "0.30.0"
 }
 group = "org.mesagisto"
 version = "1.4.0"
+
+mavenCentralPublish {
+  nexusStaging {
+    serverUrl = "https://s01.oss.sonatype.org/service/local/"
+    stagingProfileId = "9bdaa8e9e83392"
+    username = credentials?.sonatypeUsername
+    password = credentials?.sonatypePassword
+  }
+  useCentralS01()
+  githubProject("Mesagisto", "mirai-message-source")
+  licenseFromGitHubProject("AGPLv3", "master")
+  developer("Itsusinn")
+}
+
 tasks.compileKotlin {
   kotlinOptions {
     jvmTarget = "1.8"
