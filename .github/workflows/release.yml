@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@v1
 
       - name: Set up JDK
-        uses: actions/setup-java@v2n
+        uses: actions/setup-java@v2
         with:
           java-version: 17
           distribution: zulu
@@ -47,13 +47,15 @@ jobs:
           chmod +x gradlew
           ./gradlew clean checkMavenCentralPublication
           ./gradlew build publish
-          ./gradlew closeAndReleaseRepository
+          # ./gradlew closeAndReleaseRepository
 
       - name: Clone Mirai-Repo
         env:
           GH_TOKEN: ${{ secrets.BOT_TOKEN }}
           GH_HOST: "github.com"
         run: |
+          git config --global user.name "MesagistoBot"
+          git config --global user.email "bot@mesagisto.org"
           gh auth setup-git
           gh repo delete MesagistoBot/mirai-repo-mirror --confirm
           gh repo fork project-mirai/mirai-repo-mirror --clone=false
@@ -63,7 +65,7 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
       - name: Render package.json
-        uses: cuchi/jinja2-action@latest
+        uses: cuchi/jinja2-action@v1.2.0
         with:
           template: .github/package.json.j2
           output_file: .github/package.json
@@ -75,10 +77,7 @@ jobs:
           GH_TOKEN: ${{ secrets.BOT_TOKEN }}
           GH_HOST: "github.com"
         run: |
-          gh auth setup-git
           mv .github/package.json .github/mirai-repo-mirror/org/mesagisto/mirai-message-source/
-          git config user.name "MesagistoBot"
-          git config user.email "bot@mesagisto.org"
           cd .github/mirai-repo-mirror
           git add org/mesagisto/mirai-message-source/package.json
           git commit -m "bump mirai-message-source version"
