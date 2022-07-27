@@ -37,6 +37,7 @@ object Plugin : KotlinPlugin(
       val newConfig = Path("config/org.mesagisto.mirai-message-source/config.yml")
       newConfig.parent.createDirectories()
       oldConfig.moveTo(newConfig, true)
+      oldConfig.parent.deleteIfExists()
     }
   }
   override fun onEnable() {
