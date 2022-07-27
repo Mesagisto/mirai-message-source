@@ -9,7 +9,7 @@ plugins {
   id("io.codearte.nexus-staging") version "0.30.0"
 }
 group = "org.mesagisto"
-version = "1.5.0"
+version = "1.5.1"
 
 mavenCentralPublish {
   nexusStaging {

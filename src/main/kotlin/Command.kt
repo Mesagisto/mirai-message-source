@@ -28,7 +28,7 @@ object Command : CompositeCommand(
   }
 
   @SubCommand("unbind", "解绑")
-  suspend fun MemberCommandSender.unbind(address: String) {
+  suspend fun MemberCommandSender.unbind() {
     if (!user.isOperator() || !MultiBot.shouldReact(group, bot)) return
 
     Config.bindings.remove(group.id)
