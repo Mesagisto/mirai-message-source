@@ -86,3 +86,7 @@ jobs:
           gh pr create --fill --repo project-mirai/mirai-repo-mirror
           cd ../..
           rm -rf .github/mirai-repo-mirror
+
+      - name: What's wrong with the AliMavenMirror
+        run: |
+          wget --tries=10 https://maven.aliyun.com/repository/public/org/mesagisto/mirai-message-source/${{ steps.get_version.outputs.VERSION }}/mirai-message-source-${{ steps.get_version.outputs.VERSION }}.mirai2.jar
