@@ -24,11 +24,11 @@ suspend fun sendHandler(
   // 判断多Bot下是否改对该消息作出回应
   if (!MultiBot.shouldReact(event.group, bot)) return
   // 黑名单检查
-  if (sender.id in Config.blacklist) return
+  if (Config.perm.strict && sender.id in Config.blacklist) return
   // 保存聊天记录用于引用回复
+  val msgId = message.ids.first()
   MiraiDb.putMsgSource(event.source)
   // 构建消息
-  val msgId = message.ids.first()
   Db.putMsgId(subject.id, msgId, msgId, false)
   var replyId: ByteArray? = null
   val chain = message.mapNotNull map@{
