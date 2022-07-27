@@ -23,6 +23,7 @@ mavenCentralPublish {
   licenseFromGitHubProject("AGPLv3", "master")
   developer("Itsusinn")
   publication {
+    artifacts.remove(tasks.getByName("jar"))
     artifact(tasks.getByName("buildPlugin"))
   }
 }
