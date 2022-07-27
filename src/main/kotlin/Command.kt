@@ -47,7 +47,7 @@ object Command : CompositeCommand(
       group.sendMessage("${user.nick}-${user.id} 已经被封禁了")
     } else {
       Config.blacklist.add(user.id)
-      group.sendMessage("已成功封禁：user.id")
+      group.sendMessage("已成功封禁：${user.nick}-${user.id}")
     }
   }
 
