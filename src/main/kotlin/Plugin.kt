@@ -41,7 +41,7 @@ object Plugin : KotlinPlugin(
       oldConfig.parent.toFile().deleteRecursively()
     }
   }.onFailure {
-    println(it) // TODO
+    println(it) // TODO will it fails again?
   }.getOrDefault(Unit)
   override fun onEnable() {
     Config.reload()
