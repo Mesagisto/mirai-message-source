@@ -1,6 +1,7 @@
 package org.meowcat.mesagisto.mirai.handlers
 
 import kotlinx.coroutines.launch
+import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.nameCardOrNick
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.* // ktlint-disable no-wildcard-imports
@@ -58,7 +59,11 @@ suspend fun sendHandler(
         null
       }
       is At -> {
-        MessageType.Text(it.contentToString())
+        if (Bot.getInstanceOrNull(it.target) == null) {
+          MessageType.Text(it.contentToString())
+        } else {
+          null
+        }
       }
       is Face -> {
         MessageType.Text(it.contentToString())
@@ -69,6 +74,8 @@ suspend fun sendHandler(
     }
   }
 
+  // 非空检查
+  if (chain.isEmpty()) return@with
   val message = Message(
     profile = Profile(
       sender.id.toByteArray(),
