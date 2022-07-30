@@ -10,6 +10,7 @@ object Config : AutoSavePluginConfig("config") {
   val nats: NatsConfig by value()
   val cipher: CipherConfig by value()
   val proxy: ProxyConfig by value()
+  val enableNudge: Boolean by value(true)
   val blacklist: MutableList<Long> by value(mutableListOf(114514114514))
   val bindings: MutableMap<Long, String> by value()
 

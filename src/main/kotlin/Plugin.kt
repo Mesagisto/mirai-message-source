@@ -11,6 +11,7 @@ import net.mamoe.mirai.console.plugin.id
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.event.*
+import net.mamoe.mirai.event.events.NudgeEvent
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import org.fusesource.leveldbjni.internal.NativeDB
@@ -75,6 +76,11 @@ object Plugin : KotlinPlugin(
       add(eventChannel.subscribeAlways(::sendHandler, EventPriority.LOWEST))
       add(eventChannel.subscribeAlways(MultiBot::handleBotOnline))
       add(eventChannel.subscribeAlways(MultiBot::handleBotJoinGroup))
+    }
+    if (Config.enableNudge) {
+      eventChannel.subscribeAlways<NudgeEvent> {
+        subject.sendMessage("唔...可能是在正常运行？")
+      }
     }
     CommandManager.registerCommand(Command)
     val service: PermissionService<Permission> = PermissionService.INSTANCE as PermissionService<Permission>
