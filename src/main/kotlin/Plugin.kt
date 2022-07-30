@@ -30,16 +30,18 @@ object Plugin : KotlinPlugin(
   private val eventChannel = globalEventChannel()
   private val listeners: MutableList<Listener<*>> = arrayListOf()
 
-  override fun PluginComponentStorage.onLoad() {
+  override fun PluginComponentStorage.onLoad() = runCatching {
     // prepare for next version
     val oldConfig = Path("config/org.meowcat.mesagisto/mesagisto.yml")
     if (oldConfig.exists()) {
       val newConfig = Path("config/org.mesagisto.mirai-message-source/config.yml")
       newConfig.parent.createDirectories()
       oldConfig.moveTo(newConfig, true)
-      oldConfig.parent.deleteIfExists()
+      oldConfig.parent.toFile().deleteRecursively()
     }
-  }
+  }.onFailure {
+    println(it) // TODO
+  }.getOrDefault(Unit)
   override fun onEnable() {
     Config.reload()
     Config.migrate()
