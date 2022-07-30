@@ -66,7 +66,9 @@ suspend fun sendHandler(
       is At -> {
         MessageType.Text(it.contentToString())
       }
-      else -> null
+      // 拦截MessageSource与MessageOrigin等，防止出现莫名其妙的UnsupporredMessage
+      is MessageMetadata -> null // 其实现，如QuoteReply应在此处以上添加
+      else -> MessageType.Text("unsupported message")
     }
   }
 
