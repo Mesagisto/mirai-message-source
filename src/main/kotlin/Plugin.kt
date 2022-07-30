@@ -15,8 +15,8 @@ import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import org.fusesource.leveldbjni.internal.NativeDB
 import org.meowcat.mesagisto.client.*
-import org.meowcat.mesagisto.mirai.handlers.MiraiListener
 import org.meowcat.mesagisto.mirai.handlers.Receive
+import org.meowcat.mesagisto.mirai.handlers.sendHandler
 import javax.imageio.ImageIO
 import kotlin.io.path.*
 
@@ -72,7 +72,7 @@ object Plugin : KotlinPlugin(
       Receive.recover()
     }
     listeners.apply {
-      add(eventChannel.subscribeAlways(MiraiListener::handle, EventPriority.LOWEST))
+      add(eventChannel.subscribeAlways(::sendHandler, EventPriority.LOWEST))
       add(eventChannel.subscribeAlways(MultiBot::handleBotOnline))
       add(eventChannel.subscribeAlways(MultiBot::handleBotJoinGroup))
     }

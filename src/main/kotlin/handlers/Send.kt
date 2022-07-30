@@ -10,12 +10,6 @@ import org.meowcat.mesagisto.client.data.* // ktlint-disable no-wildcard-imports
 import org.meowcat.mesagisto.client.data.Message
 import org.meowcat.mesagisto.mirai.*
 
-object MiraiListener {
-  suspend fun handle(event: GroupMessageEvent) {
-    sendHandler(event)
-  }
-}
-
 suspend fun sendHandler(
   event: GroupMessageEvent
 ): Unit = with(event) {

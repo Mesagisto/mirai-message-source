@@ -1,6 +1,5 @@
 package org.meowcat.mesagisto.mirai.handlers
 
-import io.nats.client.impl.NatsMessage
 import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.message.data.QuoteReply
 import net.mamoe.mirai.message.data.toMessageChain
@@ -10,13 +9,13 @@ import org.meowcat.mesagisto.client.data.* // ktlint-disable no-wildcard-imports
 import org.meowcat.mesagisto.mirai.* // ktlint-disable no-wildcard-imports
 import org.meowcat.mesagisto.mirai.MultiBot.Speakers
 
+typealias NatsMessage = io.nats.client.Message
+
 object Receive {
   suspend fun recover() {
     Config.bindings.forEach {
       runCatching {
-        Server.recv(it.key.toString(), it.value) handler@{ msg, id ->
-          return@handler mainHandler(msg as NatsMessage, id)
-        }
+        Server.recv(it.key.toString(), it.value, ::mainHandler)
       }
     }
   }
