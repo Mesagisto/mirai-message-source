@@ -72,6 +72,14 @@ jobs:
           git push origin master
           gh pr create --fill --repo project-mirai/mirai-repo-mirror
 
+      - name: Delete older releases
+        uses: dev-drprasad/delete-older-releases@v0.2.0
+        with:
+          keep_latest: 1
+          delete_tag_pattern: beta
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Auto release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
