@@ -16,10 +16,18 @@ jobs:
           java-version: 17
           distribution: zulu
           cache: gradle
+      - name: Get Current Time
+        id: time
+        uses: nanzm/get-time-action@v1.1
+        with:
+          timeZone: 0
+          format: 'YYYYMMDDHHmmss'
       - name: Build
         run: |
           bash build.sh
           sha1sum packages/mesagisto.mirai2.jar > packages/mesagisto.mirai2.jar.sha1
+        env:
+          VERSION: beta-${{ steps.time.outputs.time }}
 
       - name: Clone Mirai-Repo
         env:
@@ -33,19 +41,11 @@ jobs:
           gh repo fork project-mirai/mirai-repo-mirror --clone=false
           gh repo clone MesagistoBot/mirai-repo-mirror .github/mirai-repo-mirror
 
-      - name: Get Current Time
-        id: time
-        uses: nanzm/get-time-action@v1.1
-        with:
-          timeZone: 0
-          format: 'YYYYMMDDHHmmss'
-
       - uses: actions-ecosystem/action-get-latest-tag@v1
         id: get-latest-tag
         with:
           semver_only: true
-          # that's just a fallback when fails to get latest tag
-          initial_version: v1.5.0
+
       - name: Trim version tag
         id: get_version
         run: echo ::set-output name=VERSION::${TAG#v}
@@ -76,7 +76,7 @@ jobs:
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: latest
+          automatic_release_tag: beta-${{ steps.time.outputs.time }}
           prerelease: true
           title: "Unstable PreRelease/不稳定预发行版"
           files: |

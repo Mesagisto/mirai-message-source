@@ -18,6 +18,7 @@ import org.fusesource.leveldbjni.internal.NativeDB
 import org.meowcat.mesagisto.client.*
 import org.meowcat.mesagisto.mirai.handlers.Receive
 import org.meowcat.mesagisto.mirai.handlers.sendHandler
+import org.mesagisto.mirai_message_source.BuildConfig
 import javax.imageio.ImageIO
 import kotlin.io.path.*
 
@@ -25,7 +26,7 @@ object Plugin : KotlinPlugin(
   JvmPluginDescription(
     id = "org.mesagisto.mirai-message-source",
     name = "Mesagisto-Mirai",
-    version = "1.0-unknown"
+    version = BuildConfig.VERSION
   )
 ) {
   private val eventChannel = globalEventChannel()
