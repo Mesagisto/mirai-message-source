@@ -89,4 +89,4 @@ jobs:
 
       - name: What's wrong with the AliMavenMirror
         run: |
-          wget --tries=10 https://maven.aliyun.com/repository/public/org/mesagisto/mirai-message-source/${{ steps.get_version.outputs.VERSION }}/mirai-message-source-${{ steps.get_version.outputs.VERSION }}.mirai2.jar
+          wget --tries=100 --retry-on-http-error=404 --wait=15 https://maven.aliyun.com/repository/public/org/mesagisto/mirai-message-source/${{ steps.get_version.outputs.VERSION }}/mirai-message-source-${{ steps.get_version.outputs.VERSION }}.mirai2.jar
