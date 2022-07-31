@@ -30,7 +30,7 @@ suspend fun sendHandler(
     when (it) {
       is PlainText -> {
         // 有时mirai会出现没有内容的消息,过滤
-        if (!it.isContentBlank()) {
+        if (!it.isContentEmpty()) {
           MessageType.Text(it.content)
         } else null
       }
@@ -68,7 +68,10 @@ suspend fun sendHandler(
       is Face -> {
         MessageType.Text(it.contentToString())
       }
-      // 拦截MessageSource与MessageOrigin等，防止出现莫名其妙的UnsupporredMessage
+      is ForwardMessage -> {
+        null
+      }
+      // 拦截MessageSource与MessageOrigin等，防止出现莫名其妙的UnsupportedMessage
       is MessageMetadata -> null // 其实现，如QuoteReply应在此处以上添加
       else -> MessageType.Text("unsupported message")
     }
@@ -90,4 +93,8 @@ suspend fun sendHandler(
   )
   val packet = Packet.from(message.left())
   Server.send(subject.id.toString(), natsAddress, packet)
+}
+
+fun ForwardMessage.flat(): List<MessageType> {
+  return arrayListOf()
 }

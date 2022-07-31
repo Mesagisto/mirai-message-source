@@ -10,11 +10,11 @@ fun Logger.bridgeToMirai(impl: MiraiLogger) {
 
   level = if (impl.isVerboseEnabled) {
     LogLevel.TRACE
-  } else if (impl.isDebugEnabled){
+  } else if (impl.isDebugEnabled) {
     LogLevel.DEBUG
-  } else if (impl.isInfoEnabled){
+  } else if (impl.isInfoEnabled) {
     LogLevel.INFO
-  } else if (impl.isWarningEnabled){
+  } else if (impl.isWarningEnabled) {
     LogLevel.WARN
   } else {
     LogLevel.ERROR
