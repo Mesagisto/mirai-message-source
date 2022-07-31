@@ -65,6 +65,13 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
 
+      - name: Get Current Time
+        id: time
+        uses: nanzm/get-time-action@v1.1
+        with:
+          timeZone: 0
+          format: 'YYYYMMDDHHmmss'
+
       - name: Render package.json
         uses: cuchi/jinja2-action@v1.2.0
         with:
@@ -72,6 +79,7 @@ jobs:
           output_file: .github/package.json
         env:
           VERSION: ${{ steps.get_version.outputs.VERSION }}
+          TIME: ${{ steps.time.outputs.time }}
 
       - name: PullRequest to Mirai-Repo
         env:
@@ -81,11 +89,9 @@ jobs:
           mv .github/package.json .github/mirai-repo-mirror/org/mesagisto/mirai-message-source/
           cd .github/mirai-repo-mirror
           git add org/mesagisto/mirai-message-source/package.json
-          git commit -m "bump mirai-message-source version"
+          git commit -m "update mirai-message-source"
           git push origin master
           gh pr create --fill --repo project-mirai/mirai-repo-mirror
-          cd ../..
-          rm -rf .github/mirai-repo-mirror
 
       - name: What's wrong with the AliMavenMirror
         run: |

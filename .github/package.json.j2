@@ -11,14 +11,14 @@
       "{{ env['VERSION'] }}"
     ],
     "pre-release": [
-      "latest"
+      "latest-{{ env['TIME'] }}"
     ]
   },
   "repo": {
-    "latest": {
-      "archive": "https://github.com/Mesagisto/mirai-message-source/releases/download/latest/mesagisto.mirai2.jar",
-      "metadata": "https://github.com/Mesagisto/mirai-message-source/releases/download/latest/maven-metadata.xml",
-      "sha1": "https://github.com/Mesagisto/mirai-message-source/releases/download/latest/mesagisto.mirai2.jar.sha1"
+    "latest-{{ env['TIME'] }}": {
+      "archive": "https://ghproxy.com/https://github.com/Mesagisto/mirai-message-source/releases/download/latest/mesagisto.mirai2.jar",
+      "sha1": "https://ghproxy.com/https://github.com/Mesagisto/mirai-message-source/releases/download/latest/mesagisto.mirai2.jar.sha1",
+      "metadata": ""
     }
   }
 }

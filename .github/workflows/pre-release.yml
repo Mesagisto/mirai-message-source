@@ -20,19 +20,58 @@ jobs:
         run: |
           bash build.sh
           sha1sum packages/mesagisto.mirai2.jar > packages/mesagisto.mirai2.jar.sha1
+
+      - name: Clone Mirai-Repo
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
+          GH_HOST: "github.com"
+        run: |
+          git config --global user.name "MesagistoBot"
+          git config --global user.email "bot@mesagisto.org"
+          gh auth setup-git
+          gh repo delete MesagistoBot/mirai-repo-mirror --confirm
+          gh repo fork project-mirai/mirai-repo-mirror --clone=false
+          gh repo clone MesagistoBot/mirai-repo-mirror .github/mirai-repo-mirror
+
       - name: Get Current Time
         id: time
         uses: nanzm/get-time-action@v1.1
         with:
           timeZone: 0
           format: 'YYYYMMDDHHmmss'
-      - name: Render maven-metadata.xml
+
+      - uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
+        with:
+          semver_only: true
+          # that's just a fallback when fails to get latest tag
+          initial_version: v1.5.0
+      - name: Trim version tag
+        id: get_version
+        run: echo ::set-output name=VERSION::${TAG#v}
+        env:
+          TAG: ${{steps.get-latest-tag.outputs.tag}}
+      - name: Render package.json
         uses: cuchi/jinja2-action@v1.2.0
         with:
-          template: .github/maven-metadata.xml.j2
-          output_file: packages/maven-metadata.xml
+          template: .github/package.json.j2
+          output_file: .github/package.json
         env:
+          VERSION: ${{ steps.get_version.outputs.VERSION }}
           TIME: ${{ steps.time.outputs.time }}
+
+      - name: PullRequest to Mirai-Repo
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
+          GH_HOST: "github.com"
+        run: |
+          mv .github/package.json .github/mirai-repo-mirror/org/mesagisto/mirai-message-source/
+          cd .github/mirai-repo-mirror
+          git add org/mesagisto/mirai-message-source/package.json
+          git commit -m "update mirai-message-source"
+          git push origin master
+          gh pr create --fill --repo project-mirai/mirai-repo-mirror
+
       - name: Auto release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
