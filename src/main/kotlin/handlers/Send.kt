@@ -60,7 +60,7 @@ suspend fun sendHandler(
       }
       is At -> {
         if (Bot.getInstanceOrNull(it.target) == null) {
-          MessageType.Text(it.contentToString())
+          MessageType.Text(it.getDisplay(subject))
         } else {
           null
         }
