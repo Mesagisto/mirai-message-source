@@ -5,8 +5,21 @@ on:
     paths-ignore: [ '*.md' ]
 
 jobs:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-latest
+    outputs:
+      time: ${{ steps.time.outputs.time }}
+    steps:
+      - name: Get Current Time
+        id: time
+        uses: nanzm/get-time-action@v1.1
+        with:
+          timeZone: 0
+          format: 'YYYYMMDDHHmmss'
   build:
     runs-on: ubuntu-latest
+    needs: [prepare]
     steps:
       - uses: actions/checkout@v1
 
@@ -16,18 +29,39 @@ jobs:
           java-version: 17
           distribution: zulu
           cache: gradle
-      - name: Get Current Time
-        id: time
-        uses: nanzm/get-time-action@v1.1
-        with:
-          timeZone: 0
-          format: 'YYYYMMDDHHmmss'
+
       - name: Build
         run: |
           bash build.sh
           sha1sum packages/mesagisto.mirai2.jar > packages/mesagisto.mirai2.jar.sha1
         env:
-          VERSION: beta-${{ steps.time.outputs.time }}
+          VERSION: beta-${{needs.prepare.outputs.time}}
+
+      - name: Auto release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: beta-${{needs.prepare.outputs.time}}
+          prerelease: true
+          title: "Unstable PreRelease/不稳定预发行版"
+          files: |
+            packages/*
+            LICENSE
+
+      - name: Delete older releases and tags
+        uses: dev-drprasad/delete-older-releases@v0.2.0
+        with:
+          keep_latest: 1
+          delete_tag_pattern: beta
+          delete_tags: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: [prepare, build]
+    if: startsWith(github.repository, 'Mesagisto')
+    steps:
 
       - name: Clone Mirai-Repo
         env:
@@ -51,6 +85,7 @@ jobs:
         run: echo ::set-output name=VERSION::${TAG#v}
         env:
           TAG: ${{steps.get-latest-tag.outputs.tag}}
+
       - name: Render package.json
         uses: cuchi/jinja2-action@v1.2.0
         with:
@@ -58,7 +93,7 @@ jobs:
           output_file: .github/package.json
         env:
           VERSION: ${{ steps.get_version.outputs.VERSION }}
-          TIME: ${{ steps.time.outputs.time }}
+          TIME: ${{needs.prepare.outputs.time}}
 
       - name: PullRequest to Mirai-Repo
         env:
@@ -71,23 +106,3 @@ jobs:
           git commit -m "update mirai-message-source"
           git push origin master
           gh pr create --fill --repo project-mirai/mirai-repo-mirror
-
-      - name: Auto release
-        uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: beta-${{ steps.time.outputs.time }}
-          prerelease: true
-          title: "Unstable PreRelease/不稳定预发行版"
-          files: |
-            packages/*
-            LICENSE
-
-      - name: Delete older releases and tags
-        uses: dev-drprasad/delete-older-releases@v0.2.0
-        with:
-          keep_latest: 1
-          delete_tag_pattern: beta
-          delete_tags: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
