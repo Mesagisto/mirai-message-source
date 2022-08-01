@@ -12,7 +12,12 @@ plugins {
 group = "org.mesagisto"
 version = "1.5.4"
 buildConfig {
-  val version = System.getenv("VERSION") ?: project.version.toString()
+  var version = System.getenv("VERSION")
+  version = if (version == null) {
+    project.version.toString()
+  } else {
+    "${project.version}-$version"
+  }
   buildConfigField("String", "VERSION", provider { "\"${version}\"" })
 }
 mavenCentralPublish {
