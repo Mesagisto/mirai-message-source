@@ -10,7 +10,7 @@ plugins {
   id("com.github.gmazzo.buildconfig") version "3.1.0"
 }
 group = "org.mesagisto"
-version = "1.5.4"
+version = "1.6.0-rc1"
 buildConfig {
   var version = System.getenv("VERSION")
   version = if (version == null) {
