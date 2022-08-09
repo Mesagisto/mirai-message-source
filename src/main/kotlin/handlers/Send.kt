@@ -1,6 +1,5 @@
 package org.meowcat.mesagisto.mirai.handlers
 
-import kotlinx.coroutines.launch
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.nameCardOrNick
 import net.mamoe.mirai.event.events.GroupMessageEvent
@@ -37,20 +36,14 @@ suspend fun sendHandler(
       is Image -> {
         val imageID = it.imageId.toByteArray()
         Res.storePhotoId(imageID)
-        // 拼装消息与下载图片异步进行
-        Plugin.launch {
-          Cache.fileByUrl(imageID, it.queryUrl()).getOrThrow()
-        }
+        Cache.fileByUrl(imageID, it.queryUrl()).getOrThrow()
         MessageType.Image(imageID)
       }
       is FlashImage -> {
         val image = it.image
         val imageID = image.imageId.toByteArray()
         Res.storePhotoId(imageID)
-        // 拼装消息与下载图片异步进行
-        Plugin.launch {
-          Cache.fileByUrl(imageID, image.queryUrl()).getOrThrow()
-        }
+        Cache.fileByUrl(imageID, image.queryUrl()).getOrThrow()
         MessageType.Image(imageID)
       }
       is QuoteReply -> {
