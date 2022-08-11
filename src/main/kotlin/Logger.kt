@@ -1,9 +1,9 @@
 package org.meowcat.mesagisto.mirai // ktlint-disable filename
 
 import net.mamoe.mirai.utils.MiraiLogger
-import org.meowcat.mesagisto.client.ILogger
-import org.meowcat.mesagisto.client.LogLevel
-import org.meowcat.mesagisto.client.Logger
+import org.mesagisto.client.ILogger
+import org.mesagisto.client.LogLevel
+import org.mesagisto.client.Logger
 
 fun Logger.bridgeToMirai(impl: MiraiLogger) {
   // modify the receiver's field 'level' to the mirai log level

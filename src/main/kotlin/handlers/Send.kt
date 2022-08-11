@@ -5,20 +5,22 @@ import net.mamoe.mirai.contact.nameCardOrNick
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.* // ktlint-disable no-wildcard-imports
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
-import org.meowcat.mesagisto.client.* // ktlint-disable no-wildcard-imports
-import org.meowcat.mesagisto.client.data.* // ktlint-disable no-wildcard-imports
-import org.meowcat.mesagisto.client.data.Message
 import org.meowcat.mesagisto.mirai.*
+import org.mesagisto.client.* // ktlint-disable no-wildcard-imports
+import org.mesagisto.client.data.* // ktlint-disable no-wildcard-imports
+import org.mesagisto.client.data.Message
+import org.mesagisto.client.utils.left
 
 suspend fun sendHandler(
   event: GroupMessageEvent
 ): Unit = with(event) {
   // 获取目标群聊的信使地址,若不存在则返回
-  val natsAddress = Config.bindings[subject.id] ?: return
+  val roomAddress = Config.bindings[subject.id] ?: return
   // 判断多Bot下是否改对该消息作出回应
   if (!MultiBot.shouldReact(event.group, bot)) return
   // 黑名单检查
   if (Config.perm.strict && sender.id in Config.blacklist) return
+
   // 保存聊天记录用于引用回复
   val msgId = message.ids.first()
   MiraiDb.putMsgSource(event.source)
@@ -84,10 +86,10 @@ suspend fun sendHandler(
     reply = replyId,
     chain
   )
-  val packet = Packet.from(message.left())
-  Server.send(subject.id.toString(), natsAddress, packet)
-}
-
-fun ForwardMessage.flat(): List<MessageType> {
-  return arrayListOf()
+  val roomId = Server.roomId(roomAddress)
+  val packet = Packet.new(
+    roomId,
+    message.left()
+  )
+  Server.send(packet, "mesagisto")
 }

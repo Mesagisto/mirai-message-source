@@ -1,6 +1,6 @@
 package org.meowcat.mesagisto.mirai
 
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import net.mamoe.mirai.console.command.CommandManager
 import net.mamoe.mirai.console.extension.PluginComponentStorage
 import net.mamoe.mirai.console.permission.AbstractPermitteeId
@@ -15,9 +15,9 @@ import net.mamoe.mirai.event.events.NudgeEvent
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import org.fusesource.leveldbjni.internal.NativeDB
-import org.meowcat.mesagisto.client.*
 import org.meowcat.mesagisto.mirai.handlers.Receive
 import org.meowcat.mesagisto.mirai.handlers.sendHandler
+import org.mesagisto.client.*
 import org.mesagisto.mirai_message_source.BuildConfig
 import javax.imageio.ImageIO
 import kotlin.io.path.*
@@ -31,7 +31,7 @@ object Plugin : KotlinPlugin(
 ) {
   private val eventChannel = globalEventChannel()
   private val listeners: MutableList<Listener<*>> = arrayListOf()
-
+  private lateinit var job: Job
   override fun PluginComponentStorage.onLoad() = runCatching {
     // prepare for next version
     val oldConfig = Path("config/org.meowcat.mesagisto/mesagisto.yml")
@@ -57,9 +57,8 @@ object Plugin : KotlinPlugin(
     }.getOrThrow()
     logger.info("正在桥接信使日志系统")
     Logger.bridgeToMirai(logger)
-    MesagistoConfig.builder {
+    val config = MesagistoConfig.builder {
       name = "mirai"
-      natsAddress = Config.nats.address
       cipherKey = Config.cipher.key
       proxyEnable = Config.proxy.enable
       proxyUri = Config.proxy.address
@@ -69,16 +68,24 @@ object Plugin : KotlinPlugin(
           image.queryUrl()
         }
       }
-    }.apply()
+      remotes = HashMap<String, String>().apply {
+        put("mesagisto", "ws://127.0.0.1:6996")
+      }
+      packetHandler = Receive::packetHandler
+    }
+
     launch {
+      config.apply()
+      println("i am ok")
       Receive.recover()
     }
+
     listeners.apply {
       add(eventChannel.subscribeAlways(::sendHandler, EventPriority.LOWEST))
       add(eventChannel.subscribeAlways(MultiBot::handleBotOnline))
       add(eventChannel.subscribeAlways(MultiBot::handleBotJoinGroup))
     }
-    if (Config.enableNudge) {
+    if (Config.switch.nudge) {
       eventChannel.subscribeAlways<NudgeEvent> {
         subject.sendMessage("唔...可能是在正常运行？")
       }

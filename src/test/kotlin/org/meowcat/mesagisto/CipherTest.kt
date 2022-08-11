@@ -1,7 +1,7 @@
 package org.meowcat.mesagisto
 import io.ktor.util.hex
 import org.junit.Test
-import org.meowcat.mesagisto.client.Cipher
+import org.mesagisto.client.Cipher
 
 class CipherTest {
 

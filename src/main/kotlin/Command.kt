@@ -15,15 +15,17 @@ object Command : CompositeCommand(
 ) {
 
   @SubCommand("bind")
-  suspend fun MemberCommandSender.bind(channel: String) {
+  suspend fun MemberCommandSender.bind(roomAddress: String) {
     if (!user.isOperator() || !MultiBot.shouldReact(group, bot)) return
-
-    if (Config.bindings.put(group.id, channel) != null) {
-      Receive.change(group.id, channel)
-      group.sendMessage("成功将群聊: ${group.name} 的信使频道变更为$channel")
-    } else {
-      Receive.add(group.id, channel)
-      group.sendMessage("成功将群聊: ${group.name} 的信使频道设置为$channel")
+    when (val before = Config.bindings.put(group.id, roomAddress)){
+      is String -> {
+        Receive.change(before, roomAddress)
+        group.sendMessage("成功将群聊: ${group.name} 的信使地址变更为$roomAddress")
+      }
+      null -> {
+        Receive.add(roomAddress)
+        group.sendMessage("成功将群聊: ${group.name} 的信使地址设置为$roomAddress")
+      }
     }
   }
 
@@ -31,8 +33,8 @@ object Command : CompositeCommand(
   suspend fun MemberCommandSender.unbind() {
     if (!user.isOperator() || !MultiBot.shouldReact(group, bot)) return
 
-    Config.bindings.remove(group.id)
-    Receive.del(group.id)
+    val address = Config.bindings.remove(group.id) ?: return
+    Receive.del(address)
     group.sendMessage("已解绑 ${group.name} 的信使频道")
   }
 

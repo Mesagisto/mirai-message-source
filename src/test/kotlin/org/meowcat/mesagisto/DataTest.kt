@@ -2,11 +2,11 @@ package org.meowcat.mesagisto
 
 import io.ktor.util.hex
 import kotlinx.serialization.InternalSerializationApi
-import org.meowcat.mesagisto.client.Cbor
-import org.meowcat.mesagisto.client.data.Message
-import org.meowcat.mesagisto.client.data.MessageType
-import org.meowcat.mesagisto.client.data.Profile
-import org.meowcat.mesagisto.client.toByteArray
+import org.mesagisto.client.Cbor
+import org.mesagisto.client.data.Message
+import org.mesagisto.client.data.MessageType
+import org.mesagisto.client.data.Profile
+import org.mesagisto.client.toByteArray
 
 object DataTest {
   @JvmStatic fun main(args: Array<String>) {

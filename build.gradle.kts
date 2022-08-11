@@ -54,14 +54,13 @@ mirai {
   jvmTarget = JavaVersion.VERSION_1_8
 }
 dependencies {
-  implementation("io.nats:jnats:2.15.3")
   implementation("org.fusesource.leveldbjni:leveldbjni-all:1.8")
   implementation("com.github.gotson:webp-imageio:0.2.2")
-  implementation("org.mesagisto:mesagisto-client:1.5.2")
+  implementation("org.mesagisto:mesagisto-client:1.6.0-build27")
 
   compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-  compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
-  compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.2.2")
+  compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+  compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.3")
 
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.hamcrest:hamcrest:2.2")
