@@ -14,6 +14,7 @@ import net.mamoe.mirai.event.*
 import net.mamoe.mirai.event.events.NudgeEvent
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
+import net.mamoe.mirai.Bot
 import org.fusesource.leveldbjni.internal.NativeDB
 import org.meowcat.mesagisto.client.*
 import org.meowcat.mesagisto.mirai.handlers.Receive
@@ -80,7 +81,9 @@ object Plugin : KotlinPlugin(
     }
     if (Config.enableNudge) {
       eventChannel.subscribeAlways<NudgeEvent> {
-        subject.sendMessage("唔...可能是在正常运行？")
+        if (Bot.getInstanceOrNull(target.id) != null) {
+          subject.sendMessage("唔...可能是在正常运行？")
+        }
       }
     }
     CommandManager.registerCommand(Command)
