@@ -11,6 +11,7 @@ import net.mamoe.mirai.message.data.toMessageChain
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import org.meowcat.mesagisto.mirai.* // ktlint-disable no-wildcard-imports
 import org.meowcat.mesagisto.mirai.MultiBot.Speakers
+import org.meowcat.mesagisto.mirai.Plugin.Config
 import org.mesagisto.client.*
 import org.mesagisto.client.data.* // ktlint-disable no-wildcard-imports
 import org.mesagisto.client.utils.ControlFlow

@@ -1,4 +1,4 @@
-package org.meowcat.mesagisto.mirai.handlers
+package org.meowcat.mesagisto.mirai.handlers // ktlint-disable filename
 
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.nameCardOrNick
@@ -6,6 +6,7 @@ import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.* // ktlint-disable no-wildcard-imports
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import org.meowcat.mesagisto.mirai.*
+import org.meowcat.mesagisto.mirai.Plugin.Config
 import org.mesagisto.client.* // ktlint-disable no-wildcard-imports
 import org.mesagisto.client.data.* // ktlint-disable no-wildcard-imports
 import org.mesagisto.client.data.Message

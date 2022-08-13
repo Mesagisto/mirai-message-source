@@ -5,6 +5,7 @@ import net.mamoe.mirai.console.command.MemberCommandSender
 import net.mamoe.mirai.console.util.ConsoleExperimentalApi
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.contact.isOperator
+import org.meowcat.mesagisto.mirai.Plugin.Config
 import org.meowcat.mesagisto.mirai.handlers.Receive
 
 object Command : CompositeCommand(

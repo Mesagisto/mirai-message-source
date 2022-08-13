@@ -1,6 +1,7 @@
 package org.meowcat.mesagisto.mirai
 
 import kotlinx.coroutines.*
+import net.mamoe.mirai.Bot
 import net.mamoe.mirai.console.command.CommandManager
 import net.mamoe.mirai.console.extension.PluginComponentStorage
 import net.mamoe.mirai.console.permission.AbstractPermitteeId
@@ -12,13 +13,11 @@ import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.event.events.NudgeEvent
-import net.mamoe.mirai.message.data.Image
-import net.mamoe.mirai.message.data.Image.Key.queryUrl
-import net.mamoe.mirai.Bot
 import org.fusesource.leveldbjni.internal.NativeDB
 import org.meowcat.mesagisto.mirai.handlers.Receive
 import org.meowcat.mesagisto.mirai.handlers.sendHandler
 import org.mesagisto.client.*
+import org.mesagisto.client.utils.ConfigKeeper
 import org.mesagisto.mirai_message_source.BuildConfig
 import javax.imageio.ImageIO
 import kotlin.io.path.*
@@ -32,23 +31,27 @@ object Plugin : KotlinPlugin(
 ) {
   private val eventChannel = globalEventChannel()
   private val listeners: MutableList<Listener<*>> = arrayListOf()
-  private lateinit var job: Job
+  private val Config_Keeper by lazy { ConfigKeeper.create(Path("config/mesagisto/config.yml")) { RootConfig() } }
+  val Config by lazy { Config_Keeper.value }
   override fun PluginComponentStorage.onLoad() = runCatching {
     // prepare for next version
-    val oldConfig = Path("config/org.meowcat.mesagisto/mesagisto.yml")
-    if (oldConfig.exists()) {
-      val newConfig = Path("config/org.mesagisto.mirai-message-source/config.yml")
-      newConfig.parent.createDirectories()
-      oldConfig.moveTo(newConfig, true)
-      oldConfig.parent.toFile().deleteRecursively()
+    val oldConfigs = arrayListOf(
+      Path("config/org.meowcat.mesagisto/mesagisto.yml"),
+      Path("config/org.mesagisto.mirai-message-source/config.yml")
+    )
+    for (oldConfig in oldConfigs) {
+      if (oldConfig.exists()) {
+        val newConfig = Path("config/mesagisto/config.yml")
+        newConfig.parent.createDirectories()
+        oldConfig.moveTo(newConfig, true)
+        oldConfig.parent.toFile().deleteRecursively()
+      }
     }
+    ensureLazy(Config)
   }.onFailure {
     println(it) // TODO will it fails again?
   }.getOrDefault(Unit)
   override fun onEnable() {
-    Config.reload()
-    Config.migrate()
-
     logger.info("正在加载Webp解析库 & LevelDB")
     // SPI And JNI related things
     switch(jvmPluginClasspath.pluginClassLoader) {
@@ -63,21 +66,14 @@ object Plugin : KotlinPlugin(
       cipherKey = Config.cipher.key
       proxyEnable = Config.proxy.enable
       proxyUri = Config.proxy.address
-      resolvePhotoUrl = { uid, _ ->
-        runCatching {
-          val image = Image(uid.toString(charset = Charsets.UTF_8))
-          image.queryUrl()
-        }
-      }
       remotes = HashMap<String, String>().apply {
-        put("mesagisto", "ws://127.0.0.1:6996")
+        put("mesagisto", "wss://center.itsusinn.site:6996")
       }
       packetHandler = Receive::packetHandler
     }
 
     launch {
       config.apply()
-      println("i am ok")
       Receive.recover()
     }
 
@@ -123,6 +119,7 @@ object Plugin : KotlinPlugin(
     listeners.forEach {
       it.complete()
     }
+    Config_Keeper.save()
     CommandManager.unregisterCommand(Command)
     Logger.info { "Mirai信使已禁用" }
   }

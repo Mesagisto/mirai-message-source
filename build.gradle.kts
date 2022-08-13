@@ -56,7 +56,7 @@ mirai {
 dependencies {
   implementation("org.fusesource.leveldbjni:leveldbjni-all:1.8")
   implementation("com.github.gotson:webp-imageio:0.2.2")
-  implementation("org.mesagisto:mesagisto-client:1.6.0-build27")
+  implementation("org.mesagisto:mesagisto-client:1.6.0-build30")
 
   compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
   compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")

@@ -15,6 +15,8 @@ import javax.imageio.stream.FileImageInputStream
 import kotlin.io.path.inputStream
 import kotlin.io.path.outputStream
 
+fun <T> ensureLazy(value: T) {}
+
 @JvmName("isWebp-ext")
 suspend fun Path.isWebp() = isWebp(this)
 
