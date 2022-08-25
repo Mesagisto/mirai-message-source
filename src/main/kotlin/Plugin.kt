@@ -81,7 +81,7 @@ object Plugin : KotlinPlugin(
     }
     if (Config.enableNudge) {
       eventChannel.subscribeAlways<NudgeEvent> {
-        if (Bot.getInstanceOrNull(target.id) != null) {
+        if (Bot.getInstanceOrNull(target.id) != null && MultiBot.shouldReact(subject, bot)) {
           subject.sendMessage("唔...可能是在正常运行？")
         }
       }
