@@ -66,9 +66,7 @@ object Plugin : KotlinPlugin(
       cipherKey = Config.cipher.key
       proxyEnable = Config.proxy.enable
       proxyUri = Config.proxy.address
-      remotes = HashMap<String, String>().apply {
-        put("mesagisto", "wss://center.itsusinn.site:6996")
-      }
+      remotes = Config.centers
       packetHandler = Receive::packetHandler
     }
 
@@ -84,7 +82,7 @@ object Plugin : KotlinPlugin(
     }
     if (Config.switch.nudge) {
       eventChannel.subscribeAlways<NudgeEvent> {
-        if (Bot.getInstanceOrNull(target.id) != null) {
+        if (Bot.getInstanceOrNull(target.id) != null && MultiBot.shouldReact(subject, bot)) {
           subject.sendMessage("唔...可能是在正常运行？")
         }
       }

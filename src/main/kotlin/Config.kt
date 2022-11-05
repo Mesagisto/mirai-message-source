@@ -10,7 +10,7 @@ data class RootConfig(
   val cipher: CipherConfig = CipherConfig(),
   val switch: SwitchConfig = SwitchConfig(),
   val proxy: ProxyConfig = ProxyConfig(),
-  val servers: ConcurrentHashMap<String, String> = ConcurrentHashMap<String, String>(1).apply { put("mesagisto", "wss://center.itsusinn.site:6996") },
+  val centers: ConcurrentHashMap<String, String> = ConcurrentHashMap<String, String>(1).apply { put("mesagisto", "wss://center.mesagisto.org") },
   val perm: PermConfig = PermConfig(),
   val bindings: ConcurrentHashMap<Long, String> = ConcurrentHashMap(),
   val blacklist: ConcurrentLinkedQueue<Long> = ConcurrentLinkedQueue(),

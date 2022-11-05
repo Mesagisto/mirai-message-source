@@ -7,18 +7,18 @@ import org.mesagisto.client.Logger
 
 fun Logger.bridgeToMirai(impl: MiraiLogger) {
   // modify the receiver's field 'level' to the mirai log level
-
-  level = if (impl.isVerboseEnabled) {
-    LogLevel.TRACE
-  } else if (impl.isDebugEnabled) {
-    LogLevel.DEBUG
-  } else if (impl.isInfoEnabled) {
-    LogLevel.INFO
-  } else if (impl.isWarningEnabled) {
-    LogLevel.WARN
-  } else {
-    LogLevel.ERROR
-  }
+  level = LogLevel.TRACE
+//  level = if (impl.isVerboseEnabled) {
+//    LogLevel.TRACE
+//  } else if (impl.isDebugEnabled) {
+//    LogLevel.DEBUG
+//  } else if (impl.isInfoEnabled) {
+//    LogLevel.INFO
+//  } else if (impl.isWarningEnabled) {
+//    LogLevel.WARN
+//  } else {
+//    LogLevel.ERROR
+//  }
   provider = object : ILogger {
     override fun log(level: LogLevel, msg: String) {
       when (level) {

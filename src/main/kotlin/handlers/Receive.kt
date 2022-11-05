@@ -63,8 +63,7 @@ object Receive {
   }
   suspend fun add(roomAddress: String) {
     val roomId = Server.roomId(roomAddress)
-    val packet = Packet.newSub(roomId)
-    Server.send(packet, "mesagisto")
+    Server.sub(roomId, "mesagisto")
   }
   suspend fun change(before: String, after: String) {
     del(before)

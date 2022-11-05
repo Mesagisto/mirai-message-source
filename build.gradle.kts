@@ -10,14 +10,9 @@ plugins {
   id("com.github.gmazzo.buildconfig") version "3.1.0"
 }
 group = "org.mesagisto"
-version = "1.6.0-rc1"
+version = "1.6.0-dev1"
 buildConfig {
-  var version = System.getenv("VERSION")
-  version = if (version == null) {
-    project.version.toString()
-  } else {
-    "${project.version}-$version"
-  }
+  var version = project.version.toString()
   buildConfigField("String", "VERSION", provider { "\"${version}\"" })
 }
 mavenCentralPublish {
@@ -40,9 +35,8 @@ mavenCentralPublish {
 tasks.compileKotlin {
   kotlinOptions {
     jvmTarget = "1.8"
-    freeCompilerArgs = listOf("-Xinline-classes", "-Xopt-in=kotlin.RequiresOptIn")
+    freeCompilerArgs = listOf("-Xinline-classes", "-opt-in=kotlin.RequiresOptIn")
   }
-  sourceCompatibility = "1.8"
 }
 
 repositories {
@@ -56,10 +50,12 @@ mirai {
 dependencies {
   implementation("org.fusesource.leveldbjni:leveldbjni-all:1.8")
   implementation("com.github.gotson:webp-imageio:0.2.2")
-  implementation("org.mesagisto:mesagisto-client:1.6.0-build30")
+  implementation("org.mesagisto:mesagisto-client:1.6.0-dev12")
+
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
 
   compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-  compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+
   compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.3")
 
   testImplementation("junit:junit:4.13.2")
