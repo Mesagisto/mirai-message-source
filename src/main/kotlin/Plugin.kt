@@ -1,6 +1,7 @@
 package org.meowcat.mesagisto.mirai
 
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import net.mamoe.mirai.Bot
 import net.mamoe.mirai.console.command.CommandManager
 import net.mamoe.mirai.console.extension.PluginComponentStorage
 import net.mamoe.mirai.console.permission.AbstractPermitteeId
@@ -12,13 +13,11 @@ import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.event.events.NudgeEvent
-import net.mamoe.mirai.message.data.Image
-import net.mamoe.mirai.message.data.Image.Key.queryUrl
-import net.mamoe.mirai.Bot
 import org.fusesource.leveldbjni.internal.NativeDB
-import org.meowcat.mesagisto.client.*
 import org.meowcat.mesagisto.mirai.handlers.Receive
 import org.meowcat.mesagisto.mirai.handlers.sendHandler
+import org.mesagisto.client.*
+import org.mesagisto.client.utils.ConfigKeeper
 import org.mesagisto.mirai_message_source.BuildConfig
 import javax.imageio.ImageIO
 import kotlin.io.path.*
@@ -32,23 +31,27 @@ object Plugin : KotlinPlugin(
 ) {
   private val eventChannel = globalEventChannel()
   private val listeners: MutableList<Listener<*>> = arrayListOf()
-
+  private val Config_Keeper by lazy { ConfigKeeper.create(Path("config/mesagisto/config.yml")) { RootConfig() } }
+  val Config by lazy { Config_Keeper.value }
   override fun PluginComponentStorage.onLoad() = runCatching {
     // prepare for next version
-    val oldConfig = Path("config/org.meowcat.mesagisto/mesagisto.yml")
-    if (oldConfig.exists()) {
-      val newConfig = Path("config/org.mesagisto.mirai-message-source/config.yml")
-      newConfig.parent.createDirectories()
-      oldConfig.moveTo(newConfig, true)
-      oldConfig.parent.toFile().deleteRecursively()
+    val oldConfigs = arrayListOf(
+      Path("config/org.meowcat.mesagisto/mesagisto.yml"),
+      Path("config/org.mesagisto.mirai-message-source/config.yml")
+    )
+    for (oldConfig in oldConfigs) {
+      if (oldConfig.exists()) {
+        val newConfig = Path("config/mesagisto/config.yml")
+        newConfig.parent.createDirectories()
+        oldConfig.moveTo(newConfig, true)
+        oldConfig.parent.toFile().deleteRecursively()
+      }
     }
+    ensureLazy(Config)
   }.onFailure {
     println(it) // TODO will it fails again?
   }.getOrDefault(Unit)
   override fun onEnable() {
-    Config.reload()
-    Config.migrate()
-
     logger.info("正在加载Webp解析库 & LevelDB")
     // SPI And JNI related things
     switch(jvmPluginClasspath.pluginClassLoader) {
@@ -58,28 +61,26 @@ object Plugin : KotlinPlugin(
     }.getOrThrow()
     logger.info("正在桥接信使日志系统")
     Logger.bridgeToMirai(logger)
-    MesagistoConfig.builder {
+    val config = MesagistoConfig.builder {
       name = "mirai"
-      natsAddress = Config.nats.address
       cipherKey = Config.cipher.key
       proxyEnable = Config.proxy.enable
       proxyUri = Config.proxy.address
-      resolvePhotoUrl = { uid, _ ->
-        runCatching {
-          val image = Image(uid.toString(charset = Charsets.UTF_8))
-          image.queryUrl()
-        }
-      }
-    }.apply()
+      remotes = Config.centers
+      packetHandler = Receive::packetHandler
+    }
+
     launch {
+      config.apply()
       Receive.recover()
     }
+
     listeners.apply {
       add(eventChannel.subscribeAlways(::sendHandler, EventPriority.LOWEST))
       add(eventChannel.subscribeAlways(MultiBot::handleBotOnline))
       add(eventChannel.subscribeAlways(MultiBot::handleBotJoinGroup))
     }
-    if (Config.enableNudge) {
+    if (Config.switch.nudge) {
       eventChannel.subscribeAlways<NudgeEvent> {
         if (Bot.getInstanceOrNull(target.id) != null && MultiBot.shouldReact(subject, bot)) {
           subject.sendMessage("唔...可能是在正常运行？")
@@ -116,6 +117,7 @@ object Plugin : KotlinPlugin(
     listeners.forEach {
       it.complete()
     }
+    Config_Keeper.save()
     CommandManager.unregisterCommand(Command)
     Logger.info { "Mirai信使已禁用" }
   }

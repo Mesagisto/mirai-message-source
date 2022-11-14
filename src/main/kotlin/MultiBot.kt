@@ -6,7 +6,7 @@ import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.event.events.BotJoinGroupEvent
 import net.mamoe.mirai.event.events.BotLeaveEvent
 import net.mamoe.mirai.event.events.BotOnlineEvent
-import org.meowcat.mesagisto.client.Logger
+import org.mesagisto.client.Logger
 import java.util.concurrent.ConcurrentHashMap
 
 object MultiBot {

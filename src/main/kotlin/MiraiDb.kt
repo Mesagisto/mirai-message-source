@@ -7,7 +7,7 @@ import net.mamoe.mirai.message.data.* // ktlint-disable no-wildcard-imports
 import org.fusesource.leveldbjni.JniDBFactory.factory
 import org.iq80.leveldb.DB
 import org.iq80.leveldb.Options
-import org.meowcat.mesagisto.client.toByteArray
+import org.mesagisto.client.toByteArray
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.Path

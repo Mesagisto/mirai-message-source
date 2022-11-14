@@ -65,13 +65,6 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
 
-      - name: Get Current Time
-        id: time
-        uses: nanzm/get-time-action@v1.1
-        with:
-          timeZone: 0
-          format: 'YYYYMMDDHHmmss'
-
       - name: Render package.json
         uses: cuchi/jinja2-action@v1.2.0
         with:
@@ -79,7 +72,6 @@ jobs:
           output_file: .github/package.json
         env:
           VERSION: ${{ steps.get_version.outputs.VERSION }}
-          TIME: ${{ steps.time.outputs.time }}
 
       - name: PullRequest to Mirai-Repo
         env:

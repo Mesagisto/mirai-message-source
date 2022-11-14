@@ -1,53 +1,69 @@
 package org.meowcat.mesagisto.mirai
 
-import kotlinx.serialization.Serializable
-import net.mamoe.mirai.console.data.AutoSavePluginConfig
-import net.mamoe.mirai.console.data.ValueName
-import net.mamoe.mirai.console.data.value
 import net.mamoe.mirai.contact.Group
+import org.mesagisto.client.Server
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
 
-object Config : AutoSavePluginConfig("config") {
-  val nats: NatsConfig by value()
-  val cipher: CipherConfig by value()
-  val proxy: ProxyConfig by value()
-  val enableNudge: Boolean by value(true)
-  val blacklist: MutableList<Long> by value(mutableListOf(114514114514))
-  val bindings: MutableMap<Long, String> by value()
+data class RootConfig(
+  val cipher: CipherConfig = CipherConfig(),
+  val switch: SwitchConfig = SwitchConfig(),
+  val proxy: ProxyConfig = ProxyConfig(),
+  val centers: ConcurrentHashMap<String, String> = ConcurrentHashMap<String, String>(1).apply { put("mesagisto", "wss://center.mesagisto.org") },
+  val perm: PermConfig = PermConfig(),
+  val bindings: ConcurrentHashMap<Long, String> = ConcurrentHashMap(),
+  val blacklist: ConcurrentLinkedQueue<Long> = ConcurrentLinkedQueue(),
+  @Deprecated("use disableGroup", ReplaceWith("disableGroup"))
+  val disable_group: ConcurrentLinkedQueue<Long> = ConcurrentLinkedQueue(),
+  @Deprecated("use disableChannel", ReplaceWith("disableChannel"))
+  val disable_channel: ConcurrentLinkedQueue<String> = ConcurrentLinkedQueue()
+) {
 
-  @ValueName("disablegroup")
-  val disableGroup: MutableList<Long> by value(mutableListOf(114514114514))
-
-  @ValueName("disablechannel")
-  val disableChannel: MutableList<String> by value(mutableListOf("114514114514"))
-
-  val perm: PermConfig by value()
-  private val targetChannelMapper: MutableMap<Long, String> by value()
   fun mapper(target: Long): String? = bindings[target]
   fun mapper(target: Group): String? = bindings[target.id]
-  fun migrate() {
-    bindings.putAll(targetChannelMapper)
-    targetChannelMapper.clear()
+  fun migrate() { }
+  fun roomAddress(target: Long): String? = bindings[target]
+
+  fun roomId(target: Long): UUID? {
+    val roomAddress = roomAddress(target) ?: return null
+    return Server.roomId(roomAddress)
+  }
+
+  fun targetId(roomId: UUID): List<Long>? {
+    val roomAddress = Server.roomMap.firstNotNullOfOrNull {
+      if (it.value == roomId) it.key else null
+    } ?: return null
+    val targets = bindings.mapNotNull {
+      if (it.value == roomAddress) it.key else null
+    }
+    return targets
   }
 }
 
-@Serializable
+@Suppress("DEPRECATION")
+val RootConfig.disableGroup
+  get() = disable_group
+
+@Suppress("DEPRECATION")
+val RootConfig.disableChannel
+  get() = disable_channel
+
 data class PermConfig(
   val strict: Boolean = false,
-  val users: List<Long> = listOf(123456)
+  val users: ConcurrentLinkedQueue<Long> = ConcurrentLinkedQueue()
 )
 
-@Serializable
-data class NatsConfig(
-  val address: String = "nats://nats.mesagisto.org:4222"
-)
-
-@Serializable
 data class ProxyConfig(
   val enable: Boolean = false,
   val address: String = "http://127.0.0.1:7890"
 )
 
-@Serializable
 data class CipherConfig(
   val key: String = "default"
 )
+
+data class SwitchConfig(
+  val nudge: Boolean = true
+)
+
