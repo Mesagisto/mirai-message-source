@@ -85,7 +85,8 @@ suspend fun sendHandler(
     ),
     id = msgId.toByteArray(),
     reply = replyId,
-    chain = chain
+    chain = chain,
+    from = subject.id.toByteArray()
   )
   val roomId = Server.roomId(roomAddress)
   val packet = Packet.new(

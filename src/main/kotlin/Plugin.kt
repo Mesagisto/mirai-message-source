@@ -67,6 +67,7 @@ object Plugin : KotlinPlugin(
       proxyEnable = Config.proxy.enable
       proxyUri = Config.proxy.address
       remotes = Config.centers
+      sameSideDeliver = true
       packetHandler = Receive::packetHandler
     }
 

@@ -20,7 +20,9 @@ import org.mesagisto.client.utils.right
 
 object Receive {
   suspend fun packetHandler(pkt: Packet): Result<ControlFlow<Packet, Unit>> = withCatch(Plugin.coroutineContext) fn@{
-    Logger.info { "packet handler" }
+    if (pkt.ctl != null) {
+      return@fn ControlFlow.Continue(Unit)
+    }
     pkt.decrypt()
       .onFailure {
         Logger.warn { "数据解密失败" }
@@ -30,10 +32,11 @@ object Receive {
           is Either.Left -> {
             val futs = arrayListOf<Deferred<Result<Unit>>>()
             for (target in Config.targetId(pkt.roomId) ?: return@fn ControlFlow.Break(pkt)) {
-              val fut = async {
-                msgHandler(it.value, target, "mesagisto").onFailure { e -> Logger.error(e) }
+              if (!it.value.from.contentEquals(target.toByteArray())) {
+                futs += async {
+                  msgHandler(it.value, target, "mesagisto").onFailure { e -> Logger.error(e) }
+                }
               }
-              futs.add(fut)
             }
             futs.joinAll()
           }
