@@ -10,7 +10,7 @@ data class RootConfig(
   val cipher: CipherConfig = CipherConfig(),
   val switch: SwitchConfig = SwitchConfig(),
   val proxy: ProxyConfig = ProxyConfig(),
-  val centers: ConcurrentHashMap<String, String> = ConcurrentHashMap<String, String>(1).apply { put("mesagisto", "wss://center.mesagisto.org") },
+  val centers: ConcurrentHashMap<String, String> = ConcurrentHashMap<String, String>(1),
   val perm: PermConfig = PermConfig(),
   val bindings: ConcurrentHashMap<Long, String> = ConcurrentHashMap(),
   val blacklist: ConcurrentLinkedQueue<Long> = ConcurrentLinkedQueue(),
@@ -22,7 +22,11 @@ data class RootConfig(
 
   fun mapper(target: Long): String? = bindings[target]
   fun mapper(target: Group): String? = bindings[target.id]
-  fun migrate() { }
+  fun migrate() {
+    if (!centers.contains("mesagisto")) {
+      centers["mesagisto"] = "wss://center.mesagisto.org"
+    }
+  }
   fun roomAddress(target: Long): String? = bindings[target]
 
   fun roomId(target: Long): UUID? {
@@ -64,6 +68,6 @@ data class CipherConfig(
 )
 
 data class SwitchConfig(
-  val nudge: Boolean = true
+  val nudge: Boolean = true,
+  val allAsSticker: Boolean = true
 )
-

@@ -48,6 +48,7 @@ object Plugin : KotlinPlugin(
       }
     }
     ensureLazy(Config)
+    Config.migrate()
   }.onFailure {
     println(it) // TODO will it fails again?
   }.getOrDefault(Unit)

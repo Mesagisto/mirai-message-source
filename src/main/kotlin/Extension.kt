@@ -33,18 +33,20 @@ suspend fun isWebp(path: Path): Boolean = runInterruptible fn@{
     }
   }
 }.getOrThrow()
-suspend fun convertWebpToPng(from: Path, to: Path) = runInterruptible {
-  val reader = ImageIO.getImageReadersByMIMEType("image/webp").next()
-  val readParam = WebPReadParam().apply {
-    isBypassFiltering = true
+suspend fun convertWebpToPng(from: Path, to: Path): Result<Unit> = withContext(Dispatchers.IO) {
+  runCatching {
+    val reader = ImageIO.getImageReadersByMIMEType("image/webp").next()
+    val readParam = WebPReadParam().apply {
+      isBypassFiltering = true
+    }
+    reader.input = FileImageInputStream(from.toFile())
+    val image = reader.read(0, readParam)
+    to.outputStream().use {
+      ImageIO.write(image, "png", it)
+    }
+    (reader.input as Closeable).close()
+    Logger.debug { "成功由WEBP转化为PNG." }
   }
-  reader.input = FileImageInputStream(from.toFile())
-  val image = reader.read(0, readParam)
-  to.outputStream().use {
-    ImageIO.write(image, "png", it)
-  }
-  (reader.input as Closeable).close()
-  Logger.debug { "成功由WEBP转化为PNG." }
 }
 
 inline fun Db.putMsgId(
