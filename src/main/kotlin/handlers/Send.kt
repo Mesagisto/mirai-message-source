@@ -1,5 +1,6 @@
 package org.meowcat.mesagisto.mirai.handlers // ktlint-disable filename
 
+import kotlinx.coroutines.launch
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.nameCardOrNick
 import net.mamoe.mirai.event.events.GroupMessageEvent
@@ -39,15 +40,27 @@ suspend fun sendHandler(
       is Image -> {
         val imageID = it.imageId.toByteArray()
         Res.storePhotoId(imageID)
-        Cache.fileByUrl(imageID, it.queryUrl()).getOrThrow()
-        MessageType.Image(imageID)
+        Plugin.launch {
+          Res.fileByUrl(imageID, it.queryUrl()).getOrThrow()
+        }
+        if (Config.switch.allAsSticker) {
+          MessageType.Sticker(imageID)
+        } else {
+          MessageType.Image(imageID)
+        }
       }
       is FlashImage -> {
         val image = it.image
         val imageID = image.imageId.toByteArray()
         Res.storePhotoId(imageID)
-        Cache.fileByUrl(imageID, image.queryUrl()).getOrThrow()
-        MessageType.Image(imageID)
+        Plugin.launch {
+          Res.fileByUrl(imageID, image.queryUrl()).getOrThrow()
+        }
+        if (Config.switch.allAsSticker) {
+          MessageType.Sticker(imageID)
+        } else {
+          MessageType.Image(imageID)
+        }
       }
       is QuoteReply -> {
         val localId = it.source.ids.first()
@@ -64,12 +77,9 @@ suspend fun sendHandler(
       is Face -> {
         MessageType.Text(it.contentToString())
       }
-//      is ForwardMessage -> {
-//        null
-//      }
       // 拦截MessageSource与MessageOrigin等，防止出现莫名其妙的UnsupportedMessage
       is MessageMetadata -> null // 其实现，如QuoteReply应在此处以上添加
-      else -> MessageType.Text("unsupported message")
+      else -> MessageType.Text("Unsupported message")
     }
   }
 
@@ -78,7 +88,6 @@ suspend fun sendHandler(
   val message = Message(
     profile = Profile(
       sender.id.toByteArray(),
-      // 等待Mirai实现QID
       sender.id.toString(),
       // TODO Unicode空白控制符
       sender.nameCardOrNick.ifEmpty { null }

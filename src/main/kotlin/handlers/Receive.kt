@@ -17,6 +17,7 @@ import org.mesagisto.client.data.* // ktlint-disable no-wildcard-imports
 import org.mesagisto.client.utils.ControlFlow
 import org.mesagisto.client.utils.Either
 import org.mesagisto.client.utils.right
+import java.nio.file.Path
 
 object Receive {
   suspend fun packetHandler(pkt: Packet): Result<ControlFlow<Packet, Unit>> = withCatch(Plugin.coroutineContext) fn@{
@@ -43,6 +44,7 @@ object Receive {
           is Either.Right -> {
             when (it.value) {
               is Event.RequestImage -> {
+                Logger.info { "received request image" }
                 val inbox = pkt.inbox as? Inbox.Request ?: return@fn ControlFlow.Break(pkt)
                 val imageRequest = it.value as Event.RequestImage
                 val image = Image(imageRequest.id.toString(charset = Charsets.UTF_8))
@@ -97,19 +99,44 @@ private suspend fun msgHandler(
     when (it) {
       is MessageType.Text -> listOf(PlainText("\n${it.content}"))
       is MessageType.Image -> {
-        val file = Cache.file(it.id, it.url, roomId, server).getOrThrow()
+        val file = Res.file(it.id, it.url, roomId, server).getOrThrow()
         val image = if (file.isWebp()) {
           Logger.debug { "图片为QQ不支持的WEBP格式,正在转为PNG格式..." }
-          Res.convertFile(it.id) { from, to ->
-            runCatching {
-              convertWebpToPng(from, to)
-            }
-          }.onFailure { Logger.error(it) }
-          file.toFile()
+          var png: Path? = null
+          MiraiRes.convert(Base64.encodeToString(it.id), "png", ::convertWebpToPng).onFailure {
+            png = null
+          }.onSuccess {
+            png = it
+          }
+          png?.toFile()
         } else {
           file.toFile()
-        }.uploadAsImage(group)
-        listOf(PlainText("\n"), image)
+        }?.uploadAsImage(group)
+        if (image != null) {
+          listOf(PlainText("\n"), image)
+        } else {
+          emptyList()
+        }
+      }
+      is MessageType.Sticker -> {
+        val file = Res.file(it.id, it.url, roomId, server).getOrThrow()
+        val image = if (file.isWebp()) {
+          Logger.debug { "图片为QQ不支持的WEBP格式,正在转为PNG格式..." }
+          var png: Path? = null
+          MiraiRes.convert(Base64.encodeToString(it.id), "png", ::convertWebpToPng).onFailure {
+            png = null
+          }.onSuccess {
+            png = it
+          }
+          png?.toFile()
+        } else {
+          file.toFile()
+        }?.uploadAsImage(group)
+        if (image != null) {
+          listOf(PlainText("\n"), image)
+        } else {
+          emptyList()
+        }
       }
     }
   }.toMessageChain()
