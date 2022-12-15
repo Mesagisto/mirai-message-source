@@ -10,7 +10,7 @@ plugins {
   id("com.github.gmazzo.buildconfig") version "3.1.0"
 }
 group = "org.mesagisto"
-version = "1.6.0-rc2"
+version = "1.6.0"
 buildConfig {
   val version = project.version.toString()
   buildConfigField("String", "VERSION", provider { "\"${version}\"" })
