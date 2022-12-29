@@ -48,9 +48,12 @@ mirai {
   jvmTarget = JavaVersion.VERSION_1_8
 }
 dependencies {
-  implementation("org.fusesource.leveldbjni:leveldbjni-all:1.8")
+  implementation("org.ktorm:ktorm-core:3.5.0")
+  implementation("org.ktorm:ktorm-support-sqlite:3.5.0")
+  implementation("org.xerial:sqlite-jdbc:3.40.0.0")
+
   implementation("com.github.gotson:webp-imageio:0.2.2")
-  implementation("org.mesagisto:mesagisto-client:1.6.0-rc.4")
+  implementation("org.mesagisto:mesagisto-client:1.6.0-rc.5")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
   compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
   compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.3")

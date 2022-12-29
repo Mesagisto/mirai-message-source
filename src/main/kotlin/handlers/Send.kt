@@ -27,7 +27,7 @@ suspend fun sendHandler(
   val msgId = message.ids.first()
   MiraiDb.putMsgSource(event.source)
   // 构建消息
-  Db.putMsgId(subject.id, msgId, msgId, false)
+  Db.putMsgId(subject.id, msgId, msgId)
   var replyId: ByteArray? = null
   val chain = message.mapNotNull map@{
     when (it) {

@@ -52,15 +52,13 @@ suspend fun convertWebpToPng(from: Path, to: Path): Result<Unit> = withContext(D
 inline fun Db.putMsgId(
   target: Long,
   uid: Int,
-  id: Int,
-  reverse: Boolean = true
-) = putMsgId(target.toByteArray(), uid.toByteArray(), id.toByteArray(), reverse)
+  id: Int
+) = putMsgId(target.toByteArray(), uid.toByteArray(), id.toByteArray())
 inline fun Db.putMsgId(
   target: Long,
   uid: ByteArray,
-  id: Int,
-  reverse: Boolean = true
-) = putMsgId(target.toByteArray(), uid, id.toByteArray(), reverse)
+  id: Int
+) = putMsgId(target.toByteArray(), uid, id.toByteArray())
 
 inline fun Db.getMsgId(
   target: Long,

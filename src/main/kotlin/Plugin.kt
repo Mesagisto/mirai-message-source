@@ -13,7 +13,6 @@ import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.event.*
 import net.mamoe.mirai.event.events.NudgeEvent
-import org.fusesource.leveldbjni.internal.NativeDB
 import org.meowcat.mesagisto.mirai.handlers.Receive
 import org.meowcat.mesagisto.mirai.handlers.sendHandler
 import org.mesagisto.client.*
@@ -56,8 +55,8 @@ object Plugin : KotlinPlugin(
     logger.info("正在加载Webp解析库 & LevelDB")
     // SPI And JNI related things
     switch(jvmPluginClasspath.pluginClassLoader) {
+      Class.forName("org.sqlite.JDBC")
       ImageIO.scanForPlugins()
-      NativeDB.LIBRARY.load()
       Result.success(Unit)
     }.getOrThrow()
     logger.info("正在桥接信使日志系统")
