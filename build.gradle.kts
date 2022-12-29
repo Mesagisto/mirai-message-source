@@ -1,9 +1,9 @@
 plugins {
   java
-  kotlin("jvm") version "1.6.0"
+  kotlin("jvm") version "1.7.0"
   id("com.github.johnrengelman.shadow") version "6.0.0"
-  kotlin("plugin.serialization") version "1.6.0"
-  id("net.mamoe.mirai-console") version "2.12.0"
+  kotlin("plugin.serialization") version "1.7.0"
+  id("net.mamoe.mirai-console") version "2.13.2"
 
   id("me.him188.maven-central-publish") version "1.0.0-dev-3"
   id("io.codearte.nexus-staging") version "0.30.0"
@@ -43,10 +43,12 @@ repositories {
   mavenCentral()
   mavenLocal()
 }
+
 mirai {
-  coreVersion = "2.12.0"
+  coreVersion = "2.13.2"
   jvmTarget = JavaVersion.VERSION_1_8
 }
+
 dependencies {
   implementation("org.ktorm:ktorm-core:3.5.0")
   implementation("org.ktorm:ktorm-support-sqlite:3.5.0")
