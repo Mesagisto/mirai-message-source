@@ -23,9 +23,7 @@ data class RootConfig(
   fun mapper(target: Long): String? = bindings[target]
   fun mapper(target: Group): String? = bindings[target.id]
   fun migrate() {
-    if (!centers.contains("mesagisto")) {
-      centers["mesagisto"] = "wss://center.mesagisto.org"
-    }
+    centers["mesagisto"] = "wss://builtin"
   }
   fun roomAddress(target: Long): String? = bindings[target]
 
