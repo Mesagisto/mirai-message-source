@@ -46,8 +46,8 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew clean checkMavenCentralPublication
-          ./gradlew build publish closeAndReleaseRepository
-
+          ./gradlew build publish
+          ./gradlew closeAndReleaseRepository
       - name: Get the version tag
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
