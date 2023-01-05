@@ -32,8 +32,8 @@ object MessageSourceT : Table<Nothing>("message_source") {
 
 object MiraiDb {
   private val database by lazy {
-    File("db_v3").mkdirs()
-    val database = Database.connect("jdbc:sqlite:db_v3/mirai.sqlite", dialect = SQLiteDialect())
+    File("db").mkdirs()
+    val database = Database.connect("jdbc:sqlite:db/mirai.sqlite", dialect = SQLiteDialect())
     MessageSourceT.createTable(database)
     database
   }
