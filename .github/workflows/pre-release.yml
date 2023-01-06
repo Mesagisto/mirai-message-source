@@ -21,6 +21,22 @@ jobs:
       - name: Build
         run: |
           bash build.sh
+          sha1sum packages/mesagisto.mirai2.jar > packages/mesagisto.mirai2.jar.sha1
+
+      - name: Get Current Time
+        id: time
+        uses: nanzm/get-time-action@v1.1
+        with:
+          timeZone: 0
+          format: 'YYYYMMDDHHmmss'
+
+      - name: Render maven-metadata.xml
+        uses: cuchi/jinja2-action@v1.2.0
+        with:
+          template: .github/maven-metadata.xml.j2
+          output_file: packages/maven-metadata.xml
+        env:
+          TIME: ${{ steps.time.outputs.time }}
 
       - name: Auto release
         uses: "marvinpinto/action-automatic-releases@latest"
