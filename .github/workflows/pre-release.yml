@@ -21,7 +21,7 @@ jobs:
       - name: Build
         run: |
           bash build.sh
-          sha1sum packages/mesagisto.mirai2.jar | awk '{print $1}' > packages/mesagisto.mirai2.jar.sha1
+          sha1sum packages/mirai-message-source.mirai2.jar | awk '{print $1}' > packages/mirai-message-source.mirai2.jar.sha1
 
       - name: Get Current Time
         id: time
