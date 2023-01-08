@@ -10,6 +10,7 @@ import org.ktorm.schema.Table
 import org.ktorm.schema.bytes
 import org.ktorm.support.sqlite.SQLiteDialect
 import org.ktorm.support.sqlite.insertOrUpdate
+import org.mesagisto.client.Db
 import org.mesagisto.client.toByteArray
 import java.io.File
 
@@ -32,8 +33,8 @@ object MessageSourceT : Table<Nothing>("message_source") {
 
 object MiraiDb {
   private val database by lazy {
-    File("db").mkdirs()
-    val database = Database.connect("jdbc:sqlite:db/mirai.sqlite", dialect = SQLiteDialect())
+    File(Db.db_prefix).mkdirs()
+    val database = Database.connect("jdbc:sqlite:${Db.db_prefix}/mirai.sqlite", dialect = SQLiteDialect())
     MessageSourceT.createTable(database)
     database
   }

@@ -64,7 +64,7 @@ suspend fun sendHandler(
       }
       is QuoteReply -> {
         val localId = it.source.ids.first()
-        replyId = Db.getMsgId(subject.id, localId)
+        replyId = Db.getMsgIdByLocal(subject.id.toByteArray(), localId.toByteArray())
         null
       }
       is At -> {

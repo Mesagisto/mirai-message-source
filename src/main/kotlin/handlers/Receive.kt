@@ -143,7 +143,7 @@ private suspend fun msgHandler(
   chain = PlainText("$senderName: ").plus(chain)
   run {
     val replyId = message.reply ?: return@run
-    val localId = Db.getMsgIdAsI32(target, replyId) ?: return@run
+    val localId = Db.getMsgIdByRemote(target.toByteArray(), replyId)?.toI32() ?: return@run
     val msgSource = MiraiDb.getMsgSource(target, localId) ?: return@run
     chain += QuoteReply(msgSource)
   }
