@@ -45,7 +45,7 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: latest
           prerelease: true
-          title: "Unstable PreRelease/不稳定预发行版"
+          title: "Bleeding edge/前沿发行版"
           files: |
             packages/*
             LICENSE
