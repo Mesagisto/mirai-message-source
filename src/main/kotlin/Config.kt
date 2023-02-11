@@ -11,23 +11,20 @@ data class RootConfig(
   val switch: SwitchConfig = SwitchConfig(),
   val proxy: ProxyConfig = ProxyConfig(),
   val centers: ConcurrentHashMap<String, String> = ConcurrentHashMap<String, String>(1),
+  val override_center: String = "",
+
   val perm: PermConfig = PermConfig(),
   val bindings: ConcurrentHashMap<Long, String> = ConcurrentHashMap(),
   val blacklist: ConcurrentLinkedQueue<Long> = ConcurrentLinkedQueue(),
 
   val disable_group: ConcurrentLinkedQueue<Long> = ConcurrentLinkedQueue(),
-  val disable_channel: ConcurrentLinkedQueue<String> = ConcurrentLinkedQueue(),
-  val override_center: String = ""
+  val disable_channel: ConcurrentLinkedQueue<String> = ConcurrentLinkedQueue()
 ) {
 
   fun mapper(target: Long): String? = bindings[target]
   fun mapper(target: Group): String? = bindings[target.id]
   fun migrate() {
-    if (override_center.isNotEmpty()) {
-      centers["mesagisto"] = override_center
-    } else {
-      centers["mesagisto"] = "wss://builtin"
-    }
+    centers["mesagisto"] = "wss://builtin"
   }
   fun roomAddress(target: Long): String? = bindings[target]
 

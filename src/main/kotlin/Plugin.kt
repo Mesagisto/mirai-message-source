@@ -69,6 +69,7 @@ object Plugin : KotlinPlugin(
       remotes = Config.centers
       sameSideDeliver = true
       packetHandler = Receive::packetHandler
+      overrideCenter = Config.override_center
     }
 
     launch {
