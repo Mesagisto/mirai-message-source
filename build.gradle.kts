@@ -3,7 +3,7 @@ plugins {
   kotlin("jvm") version "1.7.0"
   id("com.github.johnrengelman.shadow") version "6.0.0"
   kotlin("plugin.serialization") version "1.7.0"
-  id("net.mamoe.mirai-console") version "2.13.2"
+  id("net.mamoe.mirai-console") version "2.14.0"
 
   id("me.him188.maven-central-publish") version "1.0.0-dev-3"
   id("io.codearte.nexus-staging") version "0.30.0"
@@ -44,7 +44,7 @@ repositories {
 }
 
 mirai {
-  coreVersion = "2.13.2"
+  coreVersion = "2.14.0"
   jvmTarget = JavaVersion.VERSION_1_8
 }
 
