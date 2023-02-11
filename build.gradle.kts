@@ -54,7 +54,7 @@ dependencies {
   implementation("org.xerial:sqlite-jdbc:3.40.0.0")
 
   implementation("com.github.gotson:webp-imageio:0.2.2")
-  implementation("org.mesagisto:mesagisto-client:1.6.0-rc.9")
+  implementation("org.mesagisto:mesagisto-client:1.6.1")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
   compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
   compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.3")
