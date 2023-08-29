@@ -25,8 +25,8 @@ object Plugin : KotlinPlugin(
   JvmPluginDescription(
     id = "org.mesagisto.mirai-message-source",
     name = "Mesagisto-Mirai",
-    version = BuildConfig.VERSION
-  )
+    version = BuildConfig.VERSION,
+  ),
 ) {
   private val eventChannel = globalEventChannel()
   private val listeners: MutableList<Listener<*>> = arrayListOf()
@@ -36,7 +36,7 @@ object Plugin : KotlinPlugin(
     // prepare for next version
     val oldConfigs = arrayListOf(
       Path("config/org.meowcat.mesagisto/mesagisto.yml"),
-      Path("config/org.mesagisto.mirai-message-source/config.yml")
+      Path("config/org.mesagisto.mirai-message-source/config.yml"),
     )
     for (oldConfig in oldConfigs) {
       if (oldConfig.exists()) {
@@ -91,9 +91,6 @@ object Plugin : KotlinPlugin(
     }
     CommandManager.registerCommand(Command)
     val service: PermissionService<Permission> = PermissionService.INSTANCE as PermissionService<Permission>
-    runCatching {
-      service.cancel(AbstractPermitteeId.AnyUser, Plugin.parentPermission, true)
-    }
     if (
       PluginManager.plugins.find {
         it.id == "io.github.karlatemp.luckperms-mirai"
@@ -102,11 +99,17 @@ object Plugin : KotlinPlugin(
       Logger.info { "检测到LuckPerms-Mirai, 信使不再管理自身权限." }
     } else if (Config.perm.strict) {
       Logger.info { "信使的严格模式已开启, 信使仅对名单内用户指令作出响应." }
+      runCatching {
+        service.cancel(AbstractPermitteeId.AnyUser, Plugin.parentPermission, true)
+      }
       Config.perm.users.forEach { user ->
         service.permit(AbstractPermitteeId.parseFromString("u$user"), Plugin.parentPermission)
       }
     } else {
       Logger.info { "信使的严格模式已关闭, 信使指令可被任意用户调用, 但敏感操作仅允许群组管理员进行." }
+      runCatching {
+        service.cancel(AbstractPermitteeId.AnyUser, Plugin.parentPermission, true)
+      }
       service.permit(AbstractPermitteeId.AnyUser, Plugin.parentPermission)
     }
     if (
