@@ -94,8 +94,14 @@ object Plugin : KotlinPlugin(
     runCatching {
       service.cancel(AbstractPermitteeId.AnyUser, Plugin.parentPermission, true)
     }
-    if (Config.perm.strict) {
-      Logger.info { "信使的严格模式已开启, 信使仅对名单内用户指令作出响应" }
+    if (
+      PluginManager.plugins.find {
+        it.id == "io.github.karlatemp.luckperms-mirai"
+      } != null
+    ) {
+      Logger.info { "检测到LuckPerms-Mirai, 信使不再管理自身权限." }
+    } else if (Config.perm.strict) {
+      Logger.info { "信使的严格模式已开启, 信使仅对名单内用户指令作出响应." }
       Config.perm.users.forEach { user ->
         service.permit(AbstractPermitteeId.parseFromString("u$user"), Plugin.parentPermission)
       }
