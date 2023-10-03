@@ -79,12 +79,10 @@ object Plugin : KotlinPlugin(
 
     listeners.apply {
       add(eventChannel.subscribeAlways(::sendHandler, EventPriority.LOWEST))
-      add(eventChannel.subscribeAlways(MultiBot::handleBotOnline))
-      add(eventChannel.subscribeAlways(MultiBot::handleBotJoinGroup))
     }
     if (Config.switch.nudge) {
       eventChannel.subscribeAlways<NudgeEvent> {
-        if (Bot.getInstanceOrNull(target.id) != null && MultiBot.shouldReact(subject, bot)) {
+        if (Bot.getInstanceOrNull(target.id) != null) {
           subject.sendMessage("唔...可能是在正常运行？")
         }
       }

@@ -18,8 +18,6 @@ suspend fun sendHandler(
 ): Unit = with(event) {
   // 获取目标群聊的信使地址,若不存在则返回
   val roomAddress = Config.bindings[subject.id] ?: return
-  // 判断多Bot下是否改对该消息作出回应
-  if (!MultiBot.shouldReact(event.group, bot)) return
   // 黑名单检查
   if (Config.perm.strict && sender.id in Config.blacklist) return
 

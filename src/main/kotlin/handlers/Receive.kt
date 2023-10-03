@@ -3,6 +3,7 @@ package org.meowcat.mesagisto.mirai.handlers
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.joinAll
+import net.mamoe.mirai.Mirai
 import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.data.PlainText
@@ -10,7 +11,6 @@ import net.mamoe.mirai.message.data.QuoteReply
 import net.mamoe.mirai.message.data.toMessageChain
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import org.meowcat.mesagisto.mirai.* // ktlint-disable no-wildcard-imports
-import org.meowcat.mesagisto.mirai.MultiBot.Speakers
 import org.meowcat.mesagisto.mirai.Plugin.Config
 import org.mesagisto.client.*
 import org.mesagisto.client.data.* // ktlint-disable no-wildcard-imports
@@ -87,7 +87,8 @@ private suspend fun msgHandler(
   target: Long,
   server: String
 ): Result<Unit> = runCatching fn@{
-  val group = Speakers[target]?.random() ?: return@fn
+  Mirai.BotFactory
+  val group = MiraiBot.getGroup(target) ?: return@fn
   if (Config.disableGroup.contains(group.id)) return@fn
   if (Config.disableChannel.contains(Config.bindings[group.id])) return@fn
 

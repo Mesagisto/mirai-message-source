@@ -2,7 +2,9 @@ package org.meowcat.mesagisto.mirai
 
 import net.mamoe.mirai.console.command.CompositeCommand
 import net.mamoe.mirai.console.command.MemberCommandSender
+import net.mamoe.mirai.console.command.SystemCommandSender
 import net.mamoe.mirai.console.util.ConsoleExperimentalApi
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.contact.isOperator
 import org.meowcat.mesagisto.mirai.Plugin.Config
@@ -17,7 +19,7 @@ object Command : CompositeCommand(
 
   @SubCommand("bind")
   suspend fun MemberCommandSender.bind(roomAddress: String) {
-    if (!user.isOperator() || !MultiBot.shouldReact(group, bot)) return
+    if (!user.isOperator()) return
     when (val before = Config.bindings.put(group.id, roomAddress)){
       is String -> {
         Receive.change(before, roomAddress)
@@ -29,10 +31,22 @@ object Command : CompositeCommand(
       }
     }
   }
-
+  @SubCommand("bind")
+  suspend fun SystemCommandSender.bind(group: Group, roomAddress: String) {
+    when (val before = Config.bindings.put(group.id, roomAddress)){
+      is String -> {
+        Receive.change(before, roomAddress)
+        group.sendMessage("成功将群聊: ${group.name} 的信使地址变更为$roomAddress")
+      }
+      null -> {
+        Receive.add(roomAddress)
+        group.sendMessage("成功将群聊: ${group.name} 的信使地址设置为$roomAddress")
+      }
+    }
+  }
   @SubCommand("unbind")
   suspend fun MemberCommandSender.unbind() {
-    if (!user.isOperator() || !MultiBot.shouldReact(group, bot)) return
+    if (!user.isOperator()) return
 
     val address = Config.bindings.remove(group.id) ?: return
     Receive.del(address)
@@ -41,7 +55,6 @@ object Command : CompositeCommand(
 
   @SubCommand("ban")
   suspend fun MemberCommandSender.ban(user: User) {
-    if (!MultiBot.shouldReact(group, bot)) return
     if (!Config.perm.strict || !Config.perm.users.contains(user.id)) {
       group.sendMessage("信使的严格模式未启用 或 您不是本Mirai信使Bot的管理员")
       return
@@ -56,7 +69,6 @@ object Command : CompositeCommand(
 
   @SubCommand("unban")
   suspend fun MemberCommandSender.unban(user: User) {
-    if (!MultiBot.shouldReact(group, bot)) return
     if (!Config.perm.strict || !Config.perm.users.contains(user.id)) {
       group.sendMessage("信使的严格模式未启用 或 您不是本Mirai信使Bot的管理员")
       return
@@ -76,14 +88,12 @@ object Command : CompositeCommand(
 
   @SubCommand("about")
   suspend fun MemberCommandSender.about() {
-    if (!MultiBot.shouldReact(group, bot)) return
     group.sendMessage("GitHub项目主页 https://github.com/MeowCat-Studio/mesagisto")
   }
 
   @OptIn(ConsoleExperimentalApi::class)
   @SubCommand("disable")
   suspend fun MemberCommandSender.disable(@Name("group/channel") type: String) {
-    if (!MultiBot.shouldReact(group, bot)) return
     if (!Config.perm.strict || !Config.perm.users.contains(user.id)) {
       group.sendMessage("信使的严格模式未启用 或 您不是本Mirai信使Bot的管理员")
       return
@@ -123,9 +133,8 @@ object Command : CompositeCommand(
   @OptIn(ConsoleExperimentalApi::class)
   @SubCommand("enable")
   suspend fun MemberCommandSender.enable(@Name("group/channel") type: String) {
-    if (!MultiBot.shouldReact(group, bot)) return
     if (!Config.perm.strict || !Config.perm.users.contains(user.id)) {
-      group.sendMessage("信使的严格模式未启用 或 您不是本Mirai信使Bot的管理员")
+      group.sendMessage("信使的严格模式未启用\n或 您不是本Mirai信使Bot的管理员")
       return
     }
     when (type) {
