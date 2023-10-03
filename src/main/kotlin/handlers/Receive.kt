@@ -23,24 +23,21 @@ object Receive {
   suspend fun packetHandler(pkt: Packet): Result<ControlFlow<Packet, Unit>> = withCatch(Plugin.coroutineContext) fn@{
     Logger.info { "Receive msg from ${pkt.roomId}" }
     if (pkt.ctl != null) {
+      Logger.info { "Ignoring control packet" }
       return@fn ControlFlow.Continue(Unit)
     }
     val it = pkt.decrypt()
       .onFailure {
-        Logger.warn { "数据解密失败" }
+        Logger.warn { "Failed to decrypt packet" }
       }
       .getOrThrow()
     when (it) {
       is Either.Left -> {
-        val futs = arrayListOf<Deferred<Result<Unit>>>()
         for (target in Config.targetId(pkt.roomId) ?: return@fn ControlFlow.Break(pkt)) {
           if (!it.value.from.contentEquals(target.toByteArray())) {
-            futs += async {
-              msgHandler(it.value, target, "mesagisto").onFailure { e -> Logger.error(e) }
-            }
+            msgHandler(it.value, target, "mesagisto").onFailure { e -> Logger.error(e) }
           }
         }
-        futs.joinAll()
       }
       is Either.Right -> {
         when (it.value) {
