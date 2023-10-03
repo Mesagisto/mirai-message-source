@@ -21,43 +21,43 @@ import java.nio.file.Path
 
 object Receive {
   suspend fun packetHandler(pkt: Packet): Result<ControlFlow<Packet, Unit>> = withCatch(Plugin.coroutineContext) fn@{
+    Logger.info { "Receive msg from ${pkt.roomId}" }
     if (pkt.ctl != null) {
       return@fn ControlFlow.Continue(Unit)
     }
-    pkt.decrypt()
+    val it = pkt.decrypt()
       .onFailure {
         Logger.warn { "数据解密失败" }
       }
-      .onSuccess {
-        when (it) {
-          is Either.Left -> {
-            val futs = arrayListOf<Deferred<Result<Unit>>>()
-            for (target in Config.targetId(pkt.roomId) ?: return@fn ControlFlow.Break(pkt)) {
-              if (!it.value.from.contentEquals(target.toByteArray())) {
-                futs += async {
-                  msgHandler(it.value, target, "mesagisto").onFailure { e -> Logger.error(e) }
-                }
-              }
-            }
-            futs.joinAll()
-          }
-          is Either.Right -> {
-            when (it.value) {
-              is Event.RequestImage -> {
-                Logger.info { "received request image" }
-                val inbox = pkt.inbox as? Inbox.Request ?: return@fn ControlFlow.Break(pkt)
-                val imageRequest = it.value as Event.RequestImage
-                val image = Image(imageRequest.id.toString(charset = Charsets.UTF_8))
-                val url = image.queryUrl()
-                val event = Event.RespondImage(imageRequest.id, url)
-                val packet = Packet.new(pkt.roomId, event.right())
-                Server.respond(packet, "mesagisto", inbox.id)
-              }
-              else -> return@fn ControlFlow.Break(pkt)
+      .getOrThrow()
+    when (it) {
+      is Either.Left -> {
+        val futs = arrayListOf<Deferred<Result<Unit>>>()
+        for (target in Config.targetId(pkt.roomId) ?: return@fn ControlFlow.Break(pkt)) {
+          if (!it.value.from.contentEquals(target.toByteArray())) {
+            futs += async {
+              msgHandler(it.value, target, "mesagisto").onFailure { e -> Logger.error(e) }
             }
           }
         }
+        futs.joinAll()
       }
+      is Either.Right -> {
+        when (it.value) {
+          is Event.RequestImage -> {
+            Logger.info { "received request image" }
+            val inbox = pkt.inbox as? Inbox.Request ?: return@fn ControlFlow.Break(pkt)
+            val imageRequest = it.value as Event.RequestImage
+            val image = Image(imageRequest.id.toString(charset = Charsets.UTF_8))
+            val url = image.queryUrl()
+            val event = Event.RespondImage(imageRequest.id, url)
+            val packet = Packet.new(pkt.roomId, event.right())
+            Server.respond(packet, "mesagisto", inbox.id)
+          }
+          else -> return@fn ControlFlow.Break(pkt)
+        }
+      }
+    }
 
     ControlFlow.Continue(Unit)
   }
