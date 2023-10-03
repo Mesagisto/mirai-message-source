@@ -79,6 +79,7 @@ object Plugin : KotlinPlugin(
 
     listeners.apply {
       add(eventChannel.subscribeAlways(::sendHandler, EventPriority.LOWEST))
+      add(eventChannel.subscribeAlways(MiraiBot::botOnline))
     }
     if (Config.switch.nudge) {
       eventChannel.subscribeAlways<NudgeEvent> {

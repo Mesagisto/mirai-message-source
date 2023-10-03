@@ -19,7 +19,10 @@ object Command : CompositeCommand(
 
   @SubCommand("bind")
   suspend fun MemberCommandSender.bind(roomAddress: String) {
-    if (!user.isOperator()) return
+    if (!user.isOperator()) {
+      group.sendMessage("您不是管理员")
+      return
+    }
     when (val before = Config.bindings.put(group.id, roomAddress)){
       is String -> {
         Receive.change(before, roomAddress)
@@ -46,8 +49,10 @@ object Command : CompositeCommand(
   }
   @SubCommand("unbind")
   suspend fun MemberCommandSender.unbind() {
-    if (!user.isOperator()) return
-
+    if (!user.isOperator()) {
+      group.sendMessage("您不是管理员")
+      return
+    }
     val address = Config.bindings.remove(group.id) ?: return
     Receive.del(address)
     group.sendMessage("已解绑 ${group.name} 的信使频道")
