@@ -5,7 +5,7 @@ plugins {
   kotlin("plugin.serialization") version "1.7.0"
   id("net.mamoe.mirai-console") version "2.14.0"
 
-  id("me.him188.maven-central-publish") version "1.0.0-dev-3"
+  id("me.him188.maven-central-publish") version "1.0.0"
   id("io.codearte.nexus-staging") version "0.30.0"
   id("com.github.gmazzo.buildconfig") version "3.1.0"
 }
